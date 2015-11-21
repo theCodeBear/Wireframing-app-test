@@ -32,8 +32,8 @@ document.body.addEventListener('click', function(event) {
     var menuContainer = createElMenuContainer(element);
     var elMenu = createElementMenu(element);
     menuContainer.appendChild(elMenu);
-  // if a menu bar exists and a click is made not on it or its icons, close menu bar
-  } else if (document.querySelector('.element-menu') && (!element.classList.contains('element-menu') && !document.querySelector('.element-menu i'))) {
+  // if a menu bar exists and a click is made not on it or its options, close menu bar
+  } else if (document.querySelector('.element-menu') && !element.classList.contains('element-menu') && !element.classList.contains('menu-bar-item')) {
     var menuContainer = document.querySelector('.element-menu-container');
     menuContainer.parentNode.removeChild(menuContainer);
   }
@@ -75,15 +75,15 @@ function createElMenuContainer(element) {
 function createElementMenu(element) {
   var elMenu = document.createElement('div');
   elMenu.classList.add('element-menu');
-  elMenu.innerHTML = '<i class="fa fa-pencil-square fa-2x"></i>' +
-                     '<i class="fa fa-font fa-2x"></i>' +
-                     '<input type="color" value="#FFFFFF">' +
-                     '<i class="fa fa-square-o fa-2x"></i>' +
-                     '<i class="fa fa-font fa-lg"></i>' +
-                     '<i class="fa fa-font fa-3x"></i>' +
-                     '<i class="fa fa-align-left fa-2x"></i>' +
-                     '<i class="fa fa-align-center fa-2x"></i>' +
-                     '<i class="fa fa-align-right fa-2x"></i>';
+  elMenu.innerHTML = '<i class="fa fa-pencil-square fa-2x menu-bar-item"></i>' +
+                     '<i class="fa fa-font fa-2x menu-bar-item"></i>' +
+                     '<input type="color" class="menu-bar-item" value="#FFFFFF">' +
+                     '<i class="fa fa-square-o fa-2x menu-bar-item"></i>' +
+                     '<i class="fa fa-font fa-lg menu-bar-item"></i>' +
+                     '<i class="fa fa-font fa-3x menu-bar-item"></i>' +
+                     '<i class="fa fa-align-left fa-2x menu-bar-item"></i>' +
+                     '<i class="fa fa-align-center fa-2x menu-bar-item"></i>' +
+                     '<i class="fa fa-align-right fa-2x menu-bar-item"></i>';
   return elMenu;
 }
 
