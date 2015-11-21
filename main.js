@@ -30,7 +30,8 @@ function createNewElement(position) {
     ['top', position.topLeft.y + 'px'],
     ['left', position.topLeft.x + 'px'],
     ['bottom', document.body.scrollHeight - position.bottomRight.y + 'px'],
-    ['right', document.body.scrollWidth - position.bottomRight.x + 'px']
+    ['right', document.body.scrollWidth - position.bottomRight.x + 'px'],
+    ['fontSize', '16px']
   ]);
   insertElementIntoBody(newElement);
   createElementTextarea(newElement);
@@ -40,16 +41,17 @@ function insertElementIntoBody(element) {
   document.body.insertBefore(element, document.getElementById('mainjs'));
 }
 
-function createElementTextarea(element) {
+function createElementTextarea(element, text) {
   var textarea = document.createElement('textarea');
-  // textarea.setAttribute('type', 'text');
+  textarea.innerText = text ? text : '';
   textarea.setAttribute('placeholder', 'Type something...');
   addStyles(textarea, [
     ['width', '100%'],
     ['height', '100%'],
     ['resize', 'none'],
     ['border', 'none'],
-    ['padding', '0']
+    ['padding', '0'],
+    ['fontSize', '16px']
   ]);
   textarea.setAttribute('id', 'temporaryInput');
   element.appendChild(textarea);

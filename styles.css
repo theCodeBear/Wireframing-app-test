@@ -28,6 +28,22 @@ body {
   margin-right: 3px;
 }
 
+.black-font {
+  color: black;
+}
+
+.menu-color-pickers {
+  width: 26px;
+  height: 28px;
+}
+
+.text-color-input {
+  position: absolute;
+  left: 39px;
+  opacity: 0;
+  z-index: 200;
+}
+
 
 
 /* Classes to use dynamically */

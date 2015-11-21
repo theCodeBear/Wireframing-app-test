@@ -32,6 +32,7 @@ document.body.addEventListener('click', function(event) {
     var menuContainer = createElMenuContainer(element);
     var elMenu = createElementMenu(element);
     menuContainer.appendChild(elMenu);
+    addElementMenuBarListeners(element);
   // if a menu bar exists and a click is made not on it or its options, close menu bar
   } else if (document.querySelector('.element-menu') && !element.classList.contains('element-menu') && !element.classList.contains('menu-bar-item')) {
     var menuContainer = document.querySelector('.element-menu-container');
@@ -51,6 +52,67 @@ function addTextareaListener() {
   });
 }
 
+function addElementMenuBarListeners(element) {
+  editTextListener(element);
+  fontColorListener(element);
+  backgroundColorListener(element);
+  borderListener(element);
+  smallerFontListener(element);
+  largerFontListener(element);
+  leftJustifyListener(element);
+  centerJustifyListener(element);
+  rightJustifyListener(element);
+}
+
+// ELEMENT MENU BAR CLICK LISTENERS
+function editTextListener(element) {
+  document.querySelector('#edit-text').addEventListener('click', function() {
+    var text = element.innerText;
+    element.innerText = '';
+    createElementTextarea(element, text);
+  });
+}
+function fontColorListener(element) {
+  document.querySelector('#font-color').addEventListener('change', function() {
+    element.style.color = document.querySelector('#font-color').value;
+  });
+}
+function backgroundColorListener(element) {
+  document.querySelector('#background-color').addEventListener('change', function() {
+    element.style.backgroundColor = document.querySelector('#background-color').value;
+  });
+}
+function borderListener(element) {
+  document.querySelector('#toggle-border').addEventListener('click', function() {
+    if (element.style.border === 'none') element.style.border = '1px solid black';
+    else element.style.border = 'none';
+  });
+}
+function smallerFontListener(element) {
+  document.querySelector('#smaller-font').addEventListener('click', function() {
+    element.style.fontSize = + element.style.fontSize.slice(0,-2) - 4 + 'px';
+  });
+}
+function largerFontListener(element) {
+  document.querySelector('#larger-font').addEventListener('click', function() {
+    element.style.fontSize = + element.style.fontSize.slice(0,-2) + 4 + 'px';
+  });
+}
+function leftJustifyListener(element) {
+  document.querySelector('#left-justify').addEventListener('click', function() {
+    element.style.textAlign = 'left';
+  });
+}
+function centerJustifyListener(element) {
+  document.querySelector('#center-justify').addEventListener('click', function() {
+    element.style.textAlign = 'center';
+  });
+}
+function rightJustifyListener(element) {
+  document.querySelector('#right-justify').addEventListener('click', function() {
+    element.style.textAlign = 'right';
+  });
+}
 
 
 // RELATED FUNCTIONS
@@ -75,15 +137,15 @@ function createElMenuContainer(element) {
 function createElementMenu(element) {
   var elMenu = document.createElement('div');
   elMenu.classList.add('element-menu');
-  elMenu.innerHTML = '<i class="fa fa-pencil-square fa-2x menu-bar-item"></i>' +
-                     '<i class="fa fa-font fa-2x menu-bar-item"></i>' +
-                     '<input type="color" class="menu-bar-item" value="#FFFFFF">' +
-                     '<i class="fa fa-square-o fa-2x menu-bar-item"></i>' +
-                     '<i class="fa fa-font fa-lg menu-bar-item"></i>' +
-                     '<i class="fa fa-font fa-3x menu-bar-item"></i>' +
-                     '<i class="fa fa-align-left fa-2x menu-bar-item"></i>' +
-                     '<i class="fa fa-align-center fa-2x menu-bar-item"></i>' +
-                     '<i class="fa fa-align-right fa-2x menu-bar-item"></i>';
+  elMenu.innerHTML = '<i id="edit-text" style="font-size: 32px;" class="fa fa-pencil-square fa-2x menu-bar-item black-font"></i>' +
+                     '<i style="font-size: 32px;" class="fa fa-font fa-2x menu-bar-item"><input id="font-color" type="color" class="menu-bar-item text-color-input menu-color-pickers"></i>' +
+                     '<input id="background-color" type="color" class="menu-bar-item menu-color-pickers" value="#FFFFFF">' +
+                     '<i id="toggle-border" style="font-size: 32px;" class="fa fa-square-o fa-2x menu-bar-item black-font"></i>' +
+                     '<i id="smaller-font" style="font-size: 21.3333px;" class="fa fa-font fa-lg menu-bar-item black-font"></i>' +
+                     '<i id="larger-font" style="font-size: 48px;" class="fa fa-font fa-3x menu-bar-item black-font"></i>' +
+                     '<i id="left-justify" style="font-size: 32px;" class="fa fa-align-left fa-2x menu-bar-item black-font"></i>' +
+                     '<i id="center-justify" style="font-size: 32px;" class="fa fa-align-center fa-2x menu-bar-item black-font"></i>' +
+                     '<i id="right-justify" style="font-size: 32px;" class="fa fa-align-right fa-2x menu-bar-item black-font"></i>';
   return elMenu;
 }
 
@@ -110,5 +172,4 @@ function handleVerticalElementMenuPlacement(userElement) {
     top = + window.getComputedStyle(userElement).getPropertyValue('height').slice(0,-2) + 20;
   return top;
 }
-
 
