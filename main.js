@@ -3,6 +3,7 @@
 // GLOBAL VARIABLES
 // var nthElement = 1;
 var newElement;
+var elements = [];
 
 // newElement = document.createElement('div');
 // newElement.innerText = 'Hello World';
@@ -34,6 +35,16 @@ function createNewElement(position) {
     ['fontSize', '16px']
   ]);
   insertElementIntoBody(newElement);
+  var savedElement = {
+    border: newElement.style.border,
+    top: newElement.style.top,
+    left: newElement.style.left,
+    bottom: newElement.style.bottom,
+    right: newElement.style.right,
+    fontSize: newElement.style.fontSize
+  }
+  elements.push(savedElement);
+  console.log('els', elements);
   createElementTextarea(newElement);
 }
 
@@ -63,11 +74,18 @@ function addStyle(element, styleName, styleValue) {
   element.style[styleName] = styleValue;
 }
 
-// arguments: (elementVar, [ [styleName, styleValue] ])
+// arguments: (elementVar, [ [styleName, styleValue] ]), used in createElementTextarea, createNewElement, and createElMenuContainer
 function addStyles(element, styles) {
   styles.forEach(function(styleArr) {
     element.style[styleArr[0]] = styleArr[1];
   });
+}
+
+// arguments: (elementVar, [{styleName, styleValue}]), used to bring back styles from saved elements
+function addStylesFromObj(element, styles) {
+    for (var key in styles) {
+      element.style[key] = styles[key];
+    }
 }
 
 // Used to only make element if at least one dimension is larger than 20px.
