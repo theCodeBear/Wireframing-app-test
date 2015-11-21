@@ -3,7 +3,7 @@
 // THIS HOLDS ALL THE EVENT HANDLERS FOR THE APPLICATION
 
 var topLeft = {x: 0, y: 0}, bottomRight = {x: 0, y: 0};
-var menuWidth = 350;
+var menuWidth = 430;
 
 document.body.addEventListener('dblclick', function() {
   alert('bring up menu');
@@ -62,6 +62,9 @@ function addElementMenuBarListeners(element) {
   leftJustifyListener(element);
   centerJustifyListener(element);
   rightJustifyListener(element);
+  fullWidthListener(element);
+  fullHeightListener(element);
+  closeMenuBarListener(element);
 }
 
 // ELEMENT MENU BAR CLICK LISTENERS
@@ -113,6 +116,23 @@ function rightJustifyListener(element) {
     element.style.textAlign = 'right';
   });
 }
+function fullWidthListener(element) {
+  document.querySelector('#full-width').addEventListener('click', function() {
+    element.style.width = '100%';
+    element.style.left = '0';
+  });
+}
+function fullHeightListener(element) {
+  document.querySelector('#full-height').addEventListener('click', function() {
+    element.style.height = '100%';
+    element.style.top = '0';
+  });
+}
+function closeMenuBarListener(element) {
+  document.querySelector('#close-menu-bar').addEventListener('click', function() {
+    element.parentNode.removeChild(element);
+  });
+}
 
 
 // RELATED FUNCTIONS
@@ -145,7 +165,10 @@ function createElementMenu(element) {
                      '<i id="larger-font" style="font-size: 48px;" class="fa fa-font fa-3x menu-bar-item black-font"></i>' +
                      '<i id="left-justify" style="font-size: 32px;" class="fa fa-align-left fa-2x menu-bar-item black-font"></i>' +
                      '<i id="center-justify" style="font-size: 32px;" class="fa fa-align-center fa-2x menu-bar-item black-font"></i>' +
-                     '<i id="right-justify" style="font-size: 32px;" class="fa fa-align-right fa-2x menu-bar-item black-font"></i>';
+                     '<i id="right-justify" style="font-size: 32px;" class="fa fa-align-right fa-2x menu-bar-item black-font"></i>' +
+                     '<i id="full-width" style="font-size: 32px;" class="fa fa-arrows-h fa-2x menu-bar-item black-font"></i>' +
+                     '<i id="full-height" style="font-size: 32px;" class="fa fa-arrows-v fa-2x menu-bar-item black-font"></i>' +
+                     '<i id="close-menu-bar" style="font-size: 32px;" class="fa fa-close fa-2x menu-bar-item black-font"></i>';
   return elMenu;
 }
 
