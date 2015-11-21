@@ -144,11 +144,11 @@ function createElMenuContainer(element) {
   var top = handleVerticalElementMenuPlacement(element);
   left = -left + 'px';
   top = top + 'px';
-  addStyles(container, [
-    ['width', parentWidth],
-    ['left', left],
-    ['top', top]
-  ]);
+  addStyles(container, {
+    'width': parentWidth,
+    'left': left,
+    'top': top
+  });
   container.classList.add('element-menu-container');
   element.appendChild(container);
   return container;

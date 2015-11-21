@@ -5,20 +5,6 @@
 var newElement;
 var elements = [];
 
-// newElement = document.createElement('div');
-// newElement.innerText = 'Hello World';
-// newElement.classList.add('absolute');
-// addStyles(newElement, [
-//   ['color', 'red'],
-//   ['border', '1px solid black'],
-//   ['width', '200px'],
-//   ['text-align', 'center']
-// ]);
-// document.body.appendChild(newElement);
-// document.body.insertBefore(newElement, document.getElementById('jquery'));
-// insertElementIntoBody(newElement);
-
-
 
 // FUNCTIONS
 
@@ -26,14 +12,14 @@ function createNewElement(position) {
   var newElement = document.createElement('div');
   // newElement.innerText = nthElement++;
   newElement.classList.add('absolute');
-  addStyles(newElement, [
-    ['border', '1px solid black'],
-    ['top', position.topLeft.y + 'px'],
-    ['left', position.topLeft.x + 'px'],
-    ['bottom', document.body.scrollHeight - position.bottomRight.y + 'px'],
-    ['right', document.body.scrollWidth - position.bottomRight.x + 'px'],
-    ['fontSize', '16px']
-  ]);
+  addStyles(newElement, {
+    'border': '1px solid black',
+    'top': position.topLeft.y + 'px',
+    'left': position.topLeft.x + 'px',
+    'bottom': document.body.scrollHeight - position.bottomRight.y + 'px',
+    'right': document.body.scrollWidth - position.bottomRight.x + 'px',
+    'fontSize': '16px'
+  });
   insertElementIntoBody(newElement);
   var savedElement = {
     border: newElement.style.border,
@@ -56,14 +42,14 @@ function createElementTextarea(element, text) {
   var textarea = document.createElement('textarea');
   textarea.innerText = text ? text : '';
   textarea.setAttribute('placeholder', 'Type something...');
-  addStyles(textarea, [
-    ['width', '100%'],
-    ['height', '100%'],
-    ['resize', 'none'],
-    ['border', 'none'],
-    ['padding', '0'],
-    ['fontSize', '16px']
-  ]);
+  addStyles(textarea, {
+    'width': '100%',
+    'height': '100%',
+    'resize': 'none',
+    'border': 'none',
+    'padding': '0',
+    'fontSize': '16px'
+  });
   textarea.setAttribute('id', 'temporaryInput');
   element.appendChild(textarea);
   textarea.focus();
@@ -74,18 +60,11 @@ function addStyle(element, styleName, styleValue) {
   element.style[styleName] = styleValue;
 }
 
-// arguments: (elementVar, [ [styleName, styleValue] ]), used in createElementTextarea, createNewElement, and createElMenuContainer
+// arguments: (elementVar, [{styleName, styleValue}])
 function addStyles(element, styles) {
-  styles.forEach(function(styleArr) {
-    element.style[styleArr[0]] = styleArr[1];
-  });
-}
-
-// arguments: (elementVar, [{styleName, styleValue}]), used to bring back styles from saved elements
-function addStylesFromObj(element, styles) {
-    for (var key in styles) {
-      element.style[key] = styles[key];
-    }
+  for (var key in styles) {
+    element.style[key] = styles[key];
+  }
 }
 
 // Used to only make element if at least one dimension is larger than 20px.
