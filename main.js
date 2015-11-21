@@ -1,7 +1,7 @@
 'use strict';
 
 // GLOBAL VARIABLES
-var nthElement = 1;
+// var nthElement = 1;
 var newElement;
 
 // newElement = document.createElement('div');
@@ -23,7 +23,7 @@ var newElement;
 
 function createNewElement(position) {
   var newElement = document.createElement('div');
-  newElement.innerText = nthElement++;
+  // newElement.innerText = nthElement++;
   newElement.classList.add('absolute');
   addStyles(newElement, [
     ['border', '1px solid black'],
@@ -33,10 +33,28 @@ function createNewElement(position) {
     ['right', document.body.scrollWidth - position.bottomRight.x + 'px']
   ]);
   insertElementIntoBody(newElement);
+  createElementTextarea(newElement);
 }
 
 function insertElementIntoBody(element) {
   document.body.insertBefore(element, document.getElementById('mainjs'));
+}
+
+function createElementTextarea(element) {
+  var textarea = document.createElement('textarea');
+  // textarea.setAttribute('type', 'text');
+  textarea.setAttribute('placeholder', 'Type something...');
+  addStyles(textarea, [
+    ['width', '100%'],
+    ['height', '100%'],
+    ['resize', 'none'],
+    ['border', 'none'],
+    ['padding', '0']
+  ]);
+  textarea.setAttribute('id', 'temporaryInput');
+  element.appendChild(textarea);
+  textarea.focus();
+  addTextareaListener();
 }
 
 function addStyle(element, styleName, styleValue) {

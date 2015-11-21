@@ -20,24 +20,37 @@ document.body.addEventListener('mouseup', function(event) {
     createNewElement({topLeft, bottomRight});
 });
 
+// Handles clicking to create and destroy element menu bars
 document.body.addEventListener('click', function(event) {
   var element = event.path[0];
   console.log(element);
-  // if an element is clicked that isn't the body or the menu and menu doesn't exit , create the menu bar
+  // if an element is clicked that isn't the body or the menu and menu doesn't exist, create the menu bar
   if (element != document.body &&
       !element.classList.contains('element-menu') &&
       !document.querySelector('.element-menu')) {
     var menuContainer = createElMenuContainer(element);
     var elMenu = document.createElement('div');
     elMenu.classList.add('element-menu');
-    elMenu.innerHTML = '<h4>the menu! ' + element.innerText + '</h4>';
+    elMenu.innerHTML = '<h4>the menu!</h4>';
     menuContainer.appendChild(elMenu);
-  // if a menu bar  exists and a click is made not on it, close menu bar
+  // if a menu bar exists and a click is made not on it, close menu bar
   } else if (document.querySelector('.element-menu') && !element.classList.contains('element-menu')) {
     var menuContainer = document.querySelector('.element-menu-container');
     menuContainer.parentNode.removeChild(menuContainer);
   }
 });
+
+function addTextareaListener() {
+  document.querySelector('#temporaryInput').addEventListener('blur', function(event) {
+    console.log('blurred', event.path[0]);
+    var textarea = event.path[0];
+    var input = textarea.value;
+    textarea.parentNode.innerText = input;
+    textarea.removeEventListener('blur', function() {
+      textarea.parentNode.removeChild(textarea);
+    });
+  });
+}
 
 
 
