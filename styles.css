@@ -4,8 +4,20 @@ body {
   margin: 0;
 }
 
+.element-menu {
+  background-color: #AAA;
+  position: absolute;
+  top: -60px;
+  width: 200px;
+  z-index: 100;
+  border: 2px solid blue;
+  height: 40px;
+  text-align: center;
+}
 
-/* Classes */
+
+
+/* Classes to use dynamically */
 .absolute {
   position: absolute;
 }

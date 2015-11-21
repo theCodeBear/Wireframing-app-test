@@ -51,9 +51,14 @@ function addStyles(element, styles) {
 }
 
 // Used to only make element if at least one dimension is larger than 20px.
+// And also to make sure element creation is done from top left to bottom right.
 // return true if big enough, false otherwise.
 function elementIsBigEnough(position) {
   var width = position.bottomRight.x - position.topLeft.x;
   var height = position.bottomRight.y - position.topLeft.y;
-  return width > 20 || height > 20;
+  var leftToRight = position.bottomRight.x > position.topLeft.x;
+  var topToBottom = position.bottomRight.y > position.topLeft.y;
+  return (width > 20 || height > 20) && leftToRight && topToBottom;
 }
+
+
