@@ -24,7 +24,7 @@ document.body.addEventListener('mouseup', function(event) {
 // Handles clicking to create and destroy element menu bars
 document.body.addEventListener('click', function(event) {
   var element = event.path[0];
-  console.log(element);
+  // console.log(element);
   // if an element is clicked that isn't the body or the menu and menu doesn't exist, create the menu bar
   if (element != document.body &&
       !element.classList.contains('element-menu') &&
@@ -46,6 +46,7 @@ function addTextareaListener() {
     var textarea = event.path[0];
     var input = textarea.value;
     textarea.parentNode.innerText = input;
+    updateSavedElement(event.path[1], 'innerText', input);
     textarea.removeEventListener('blur', function() {
       textarea.parentNode.removeChild(textarea);
     });
@@ -78,54 +79,64 @@ function editTextListener(element) {
 function fontColorListener(element) {
   document.querySelector('#font-color').addEventListener('change', function() {
     element.style.color = document.querySelector('#font-color').value;
+    updateSavedElement(element, 'style', {color: element.style.color});
   });
 }
 function backgroundColorListener(element) {
   document.querySelector('#background-color').addEventListener('change', function() {
     element.style.backgroundColor = document.querySelector('#background-color').value;
+    updateSavedElement(element, 'style', {backgroundColor: element.style.backgroundColor});
   });
 }
 function borderListener(element) {
   document.querySelector('#toggle-border').addEventListener('click', function() {
     if (element.style.border === 'none') element.style.border = '1px solid black';
     else element.style.border = 'none';
+    updateSavedElement(element, 'style', {border: element.style.border});
   });
 }
 function smallerFontListener(element) {
   document.querySelector('#smaller-font').addEventListener('click', function() {
     element.style.fontSize = + element.style.fontSize.slice(0,-2) - 4 + 'px';
+    updateSavedElement(element, 'style', {fontSize: element.style.fontSize});
   });
 }
 function largerFontListener(element) {
   document.querySelector('#larger-font').addEventListener('click', function() {
     element.style.fontSize = + element.style.fontSize.slice(0,-2) + 4 + 'px';
+    updateSavedElement(element, 'style', {fontSize: element.style.fontSize});
   });
 }
 function leftJustifyListener(element) {
   document.querySelector('#left-justify').addEventListener('click', function() {
     element.style.textAlign = 'left';
+    updateSavedElement(element, 'style', {textAlign: element.style.textAlign});
   });
 }
 function centerJustifyListener(element) {
   document.querySelector('#center-justify').addEventListener('click', function() {
     element.style.textAlign = 'center';
+    updateSavedElement(element, 'style', {textAlign: element.style.textAlign});
   });
 }
 function rightJustifyListener(element) {
   document.querySelector('#right-justify').addEventListener('click', function() {
     element.style.textAlign = 'right';
+    updateSavedElement(element, 'style', {textAlign: element.style.textAlign});
   });
 }
 function fullWidthListener(element) {
   document.querySelector('#full-width').addEventListener('click', function() {
     element.style.width = '100%';
     element.style.left = '0';
+    updateSavedElement(element, 'style', {width: element.style.width, left: element.style.left});
   });
 }
 function fullHeightListener(element) {
   document.querySelector('#full-height').addEventListener('click', function() {
     element.style.height = '100%';
     element.style.top = '0';
+    updateSavedElement(element, 'style', {height: element.style.height, top: element.style.top});
   });
 }
 function closeMenuBarListener(element) {

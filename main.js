@@ -12,6 +12,7 @@ function createNewElement(position) {
   var newElement = document.createElement('div');
   // newElement.innerText = nthElement++;
   newElement.classList.add('absolute');
+  newElement.setAttribute('id', elements.length);
   addStyles(newElement, {
     'border': '1px solid black',
     'top': position.topLeft.y + 'px',
@@ -60,10 +61,12 @@ function addStyle(element, styleName, styleValue) {
   element.style[styleName] = styleValue;
 }
 
-// arguments: (elementVar, [{styleName, styleValue}])
+// arguments: (elementVar, {styleName: styleValue, styleName: styleValue, etc})
+// applies styles and innerText to an element.
 function addStyles(element, styles) {
   for (var key in styles) {
-    element.style[key] = styles[key];
+    if (key === 'innerText') element.innerText = styles[key];
+    else element.style[key] = styles[key];
   }
 }
 
@@ -78,11 +81,21 @@ function elementIsBigEnough(position) {
   return (width > 20 || height > 20) && leftToRight && topToBottom;
 }
 
+// updating a saved element with new user chosen styles or text.
+// the property argument is 'innerText' or 'style'.
+function updateSavedElement(element, property, value) {
+  if (property === 'innerText')
+    elements[element.getAttribute('id')][property] = value;
+  else if (property === 'style')
+    for (var key in value) elements[element.getAttribute('id')][key] = value[key];
+}
+
 function bringBackAllElements() {
   var rebornElements = [];
   for (var i = 0; i<elements.length; i++) {
     rebornElements.push(document.createElement('div'));
     rebornElements[i].classList.add('absolute');
+    rebornElements[i].setAttribute('id', i);
     addStyles(rebornElements[i], elements[i]);
     insertElementIntoBody(rebornElements[i]);
   }
