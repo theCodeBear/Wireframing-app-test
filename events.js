@@ -3,6 +3,7 @@
 // THIS HOLDS ALL THE EVENT HANDLERS FOR THE APPLICATION
 
 var topLeft = {x: 0, y: 0}, bottomRight = {x: 0, y: 0};
+var menuWidth = 350;
 
 document.body.addEventListener('dblclick', function() {
   alert('bring up menu');
@@ -29,9 +30,7 @@ document.body.addEventListener('click', function(event) {
       !element.classList.contains('element-menu') &&
       !document.querySelector('.element-menu')) {
     var menuContainer = createElMenuContainer(element);
-    var elMenu = document.createElement('div');
-    elMenu.classList.add('element-menu');
-    elMenu.innerHTML = '<h4>the menu!</h4>';
+    var elMenu = createElementMenu(element);
     menuContainer.appendChild(elMenu);
   // if a menu bar exists and a click is made not on it, close menu bar
   } else if (document.querySelector('.element-menu') && !element.classList.contains('element-menu')) {
@@ -73,15 +72,30 @@ function createElMenuContainer(element) {
   return container;
 }
 
+function createElementMenu(element) {
+  var elMenu = document.createElement('div');
+  elMenu.classList.add('element-menu');
+  elMenu.innerHTML = '<i class="fa fa-pencil-square fa-2x"></i>' +
+                     '<i class="fa fa-font fa-2x"></i>' +
+                     '<input type="color" value="#FFFFFF">' +
+                     '<i class="fa fa-square-o fa-2x"></i>' +
+                     '<i class="fa fa-font fa-lg"></i>' +
+                     '<i class="fa fa-font fa-3x"></i>' +
+                     '<i class="fa fa-align-left fa-2x"></i>' +
+                     '<i class="fa fa-align-center fa-2x"></i>' +
+                     '<i class="fa fa-align-right fa-2x"></i>';
+  return elMenu;
+}
+
 // handle the various horizontal placement needs of the element menu bar when it pops up
 function handleHorizontalElementMenuPlacement(userElement, parentWidth) {
   // center menu if parent element is less wide than the menu
-  var left = (parentWidth.slice(0,-2) < 200) ? (200-parentWidth.slice(0,-2)) / 2 : 0;
+  var left = (parentWidth.slice(0,-2) < menuWidth) ? (menuWidth-parentWidth.slice(0,-2)) / 2 : 0;
   // console.log(userElement.style.left);
   // move menu to left edge of parent element when it would otherwise go offscreen to the left
   if (left !== 0 && left > userElement.style.left.slice(0,-2)) left = 0;
   // move right edge of menu to right edge of parent element when it would other be offscreen to the right
-  else if (userElement.style.left.slice(0,-2) - left + 200 >= document.body.scrollWidth) left = 200 - parentWidth.slice(0,-2);
+  else if (userElement.style.left.slice(0,-2) - left + menuWidth >= document.body.scrollWidth) left = menuWidth - parentWidth.slice(0,-2);
   return left;
 }
 

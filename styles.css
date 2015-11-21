@@ -8,18 +8,24 @@ body {
 .element-menu-container {
   position: absolute;
   top: -60px;
-  height: 40px;
+  height: 50px;
 }
 
 .element-menu {
   background-color: #AAA;
   position: relative;
-  width: 200px;
+  width: 350px;
   z-index: 100;
-  border: 2px solid blue;
-  height: 40px;
+  height: 50px;
   text-align: center;
   margin: 0 auto;
+  box-shadow: 0 3px 4px 1px gray;
+  border-radius: 5px;
+}
+
+.element-menu i {
+  margin-left: 3px;
+  margin-right: 3px;
 }
 
 
