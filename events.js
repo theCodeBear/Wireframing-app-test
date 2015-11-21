@@ -42,7 +42,6 @@ document.body.addEventListener('click', function(event) {
 
 function addTextareaListener() {
   document.querySelector('#temporaryInput').addEventListener('blur', function(event) {
-    console.log('blurred', event.path[0]);
     var textarea = event.path[0];
     var input = textarea.value;
     textarea.parentNode.innerText = input;

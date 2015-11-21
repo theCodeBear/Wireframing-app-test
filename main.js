@@ -5,6 +5,7 @@
 var newElement;
 var elements = [];
 
+getElementsFromLocalStorage();
 
 // FUNCTIONS
 
@@ -31,6 +32,7 @@ function createNewElement(position) {
     fontSize: newElement.style.fontSize
   }
   elements.push(savedElement);
+  window.localStorage.setItem('wirez', JSON.stringify(elements));
   console.log('els', elements);
   createElementTextarea(newElement);
 }
@@ -88,13 +90,16 @@ function updateSavedElement(element, property, value) {
     elements[element.getAttribute('id')][property] = value;
   else if (property === 'style')
     for (var key in value) elements[element.getAttribute('id')][key] = value[key];
+  window.localStorage.setItem('wirez', JSON.stringify(elements));
 }
 
 // deletes an element using the element menu bar delete button.
-// Deletes it from the saved elements model, and updates the id's of all
-// the elements in the DOM that appear later in the saved elements array.
+// Deletes it from the saved elements model, saves new elements array to
+// localStorage, and updates the id's of all the elements in the DOM that
+// appear later in the saved elements array.
 function deleteElement(elementId) {
   elements.splice(elementId, 1);
+  window.localStorage.setItem('wirez', JSON.stringify(elements));
   // Note: querySelectorAll returns a NodeList which is different than an array
   // and the filter() method doesn't work on it, but the following line of
   // code returns an array I can use filter() on! hooray!
@@ -107,14 +112,17 @@ function deleteElement(elementId) {
   });
 }
 
-function bringBackAllElements() {
-  var rebornElements = [];
-  for (var i = 0; i<elements.length; i++) {
-    rebornElements.push(document.createElement('div'));
-    rebornElements[i].classList.add('absolute');
-    rebornElements[i].setAttribute('id', i);
-    addStyles(rebornElements[i], elements[i]);
-    insertElementIntoBody(rebornElements[i]);
+function getElementsFromLocalStorage() {
+  elements = JSON.parse(window.localStorage.getItem('wirez')) || [];
+  if (elements.length) {
+    var rebornElements = [];
+    for (var i = 0; i<elements.length; i++) {
+      rebornElements.push(document.createElement('div'));
+      rebornElements[i].classList.add('absolute');
+      rebornElements[i].setAttribute('id', i);
+      addStyles(rebornElements[i], elements[i]);
+      insertElementIntoBody(rebornElements[i]);
+    }
   }
 }
 
