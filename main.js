@@ -78,4 +78,14 @@ function elementIsBigEnough(position) {
   return (width > 20 || height > 20) && leftToRight && topToBottom;
 }
 
+function bringBackAllElements() {
+  var rebornElements = [];
+  for (var i = 0; i<elements.length; i++) {
+    rebornElements.push(document.createElement('div'));
+    rebornElements[i].classList.add('absolute');
+    addStyles(rebornElements[i], elements[i]);
+    insertElementIntoBody(rebornElements[i]);
+  }
+}
+
 
