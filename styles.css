@@ -2,17 +2,24 @@
 body {
   height: 100vh;
   margin: 0;
+  overflow-x: hidden;
+}
+
+.element-menu-container {
+  position: absolute;
+  top: -60px;
+  height: 40px;
 }
 
 .element-menu {
   background-color: #AAA;
-  position: absolute;
-  top: -60px;
+  position: relative;
   width: 200px;
   z-index: 100;
   border: 2px solid blue;
   height: 40px;
   text-align: center;
+  margin: 0 auto;
 }
 
 
