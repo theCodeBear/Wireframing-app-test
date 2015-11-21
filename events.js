@@ -32,8 +32,8 @@ document.body.addEventListener('click', function(event) {
     var menuContainer = createElMenuContainer(element);
     var elMenu = createElementMenu(element);
     menuContainer.appendChild(elMenu);
-  // if a menu bar exists and a click is made not on it, close menu bar
-  } else if (document.querySelector('.element-menu') && !element.classList.contains('element-menu')) {
+  // if a menu bar exists and a click is made not on it or its icons, close menu bar
+  } else if (document.querySelector('.element-menu') && (!element.classList.contains('element-menu') && !document.querySelector('.element-menu i'))) {
     var menuContainer = document.querySelector('.element-menu-container');
     menuContainer.parentNode.removeChild(menuContainer);
   }
