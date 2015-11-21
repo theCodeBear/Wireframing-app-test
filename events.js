@@ -141,6 +141,7 @@ function fullHeightListener(element) {
 }
 function closeMenuBarListener(element) {
   document.querySelector('#close-menu-bar').addEventListener('click', function() {
+    deleteElement(element.getAttribute('id'));
     element.parentNode.removeChild(element);
   });
 }

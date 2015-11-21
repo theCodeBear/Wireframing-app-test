@@ -90,6 +90,23 @@ function updateSavedElement(element, property, value) {
     for (var key in value) elements[element.getAttribute('id')][key] = value[key];
 }
 
+// deletes an element using the element menu bar delete button.
+// Deletes it from the saved elements model, and updates the id's of all
+// the elements in the DOM that appear later in the saved elements array.
+function deleteElement(elementId) {
+  elements.splice(elementId, 1);
+  // Note: querySelectorAll returns a NodeList which is different than an array
+  // and the filter() method doesn't work on it, but the following line of
+  // code returns an array I can use filter() on! hooray!
+  var userMadeElements = Array.prototype.slice.call(document.querySelectorAll('.absolute'));
+  var elementsToUpdate = userMadeElements.filter(function(el) {
+    return el.getAttribute('id') > elementId;
+  });
+  elementsToUpdate.forEach(function(el) {
+    el.setAttribute('id', el.getAttribute('id')-1);
+  });
+}
+
 function bringBackAllElements() {
   var rebornElements = [];
   for (var i = 0; i<elements.length; i++) {
