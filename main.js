@@ -85,6 +85,8 @@ function elementIsBigEnough(position) {
 
 // updating a saved element with new user chosen styles or text.
 // the property argument is 'innerText' or 'style'.
+// if property is 'style', value is {styleName: value, styleName: value, etc}
+// if property is 'innerText', value is a string.
 function updateSavedElement(element, property, value) {
   if (property === 'innerText')
     elements[element.getAttribute('id')][property] = value;

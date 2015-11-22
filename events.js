@@ -3,7 +3,9 @@
 // THIS HOLDS ALL THE EVENT HANDLERS FOR THE APPLICATION
 
 var topLeft = {x: 0, y: 0}, bottomRight = {x: 0, y: 0};
-var menuWidth = 430;
+var menuWidth = 470;
+var resizing = false;
+var hadBorder = false;
 
 document.body.addEventListener('dblclick', function() {
   alert('bring up menu');
@@ -14,17 +16,35 @@ document.body.addEventListener('mousedown', function(event) {
   topLeft.y = event.clientY;
 });
 
-document.body.addEventListener('mouseup', function(event) {
-  bottomRight.x = event.clientX;
-  bottomRight.y = event.clientY;
-  if (elementIsBigEnough({topLeft, bottomRight}))
-    createNewElement({topLeft, bottomRight});
-});
+document.body.addEventListener('mouseup', mouseDown);
+
+function mouseDown(event) {
+  if (!resizing) {
+    bottomRight.x = event.clientX;
+    bottomRight.y = event.clientY;
+    if (elementIsBigEnough({topLeft, bottomRight}))
+      createNewElement({topLeft, bottomRight});
+  }
+}
+
 
 // Handles clicking to create and destroy element menu bars
 document.body.addEventListener('click', function(event) {
   var element = event.path[0];
   // console.log(element);
+  // if the resize button on the menu bar has been clicked and the user clicks off that element, turn resize off
+  if (resizing && !element.classList.contains('resize') && element.getAttribute('id') !== 'resize') {
+    resizing = false;
+    var resizedElement = document.querySelector('.resize');
+    resizedElement.style.border = (hadBorder) ? '1px solid black' : 'none';
+    resizedElement.classList.remove('resize');
+    resizedElement.style.bottom = computeBottomOrTopStyle(resizedElement.style.top, resizedElement.style.height, resizedElement.style.border, document.body.scrollHeight);
+    resizedElement.style.right = computeBottomOrTopStyle(resizedElement.style.left, resizedElement.style.width, resizedElement.style.border, document.body.scrollWidth);
+    updateSavedElement(resizedElement, 'style', {
+      bottom: resizedElement.style.bottom,
+      right: resizedElement.style.right
+    });
+  }
   // if an element is clicked that isn't the body or the menu and menu doesn't exist, create the menu bar
   if (element != document.body &&
       !element.classList.contains('element-menu') &&
@@ -35,8 +55,7 @@ document.body.addEventListener('click', function(event) {
     addElementMenuBarListeners(element);
   // if a menu bar exists and a click is made not on it or its options, close menu bar
   } else if (document.querySelector('.element-menu') && !element.classList.contains('element-menu') && !element.classList.contains('menu-bar-item')) {
-    var menuContainer = document.querySelector('.element-menu-container');
-    menuContainer.parentNode.removeChild(menuContainer);
+    closeElementMenuBar();
   }
 });
 
@@ -64,7 +83,8 @@ function addElementMenuBarListeners(element) {
   rightJustifyListener(element);
   fullWidthListener(element);
   fullHeightListener(element);
-  closeMenuBarListener(element);
+  resizeListener(element);
+  deleteElementListener(element);
 }
 
 // ELEMENT MENU BAR CLICK LISTENERS
@@ -138,8 +158,19 @@ function fullHeightListener(element) {
     updateSavedElement(element, 'style', {height: element.style.height, top: element.style.top});
   });
 }
-function closeMenuBarListener(element) {
-  document.querySelector('#close-menu-bar').addEventListener('click', function() {
+function resizeListener(element) {
+  document.querySelector('#resize').addEventListener('click', function() {
+    element.classList.add('resize');
+    // need to create temporary border for resizing in case border is off
+    hadBorder = (element.style.border === 'none') ? false : true;
+    if (!hadBorder) element.style.border = '1px dashed black';
+    resizing = true;
+    // fix a bug that sometimes a piece of the menu bar still shows after resizing
+    document.querySelector('.element-menu').style.visibility = 'hidden';
+  });
+}
+function deleteElementListener(element) {
+  document.querySelector('#delete-element').addEventListener('click', function() {
     deleteElement(element.getAttribute('id'));
     element.parentNode.removeChild(element);
   });
@@ -147,6 +178,21 @@ function closeMenuBarListener(element) {
 
 
 // RELATED FUNCTIONS
+
+// Returns a bottom or right CSS style, given top/left style, element height/width,
+// and document.body.scrollHeight/Width. Returns number of pixels with the 'px' suffix.
+function computeBottomOrTopStyle(topOrLeft, heightOrWidth, border, scrollHeightOrWidth) {
+  // need to subtract by 2 pixel if there is a 1 pixel border for element
+  var borderAdjuster = (border === 'none') ? 0 : 2;
+  topOrLeft = + topOrLeft.slice(0,-2);
+  heightOrWidth = + heightOrWidth.slice(0,-2);
+  return scrollHeightOrWidth - topOrLeft - heightOrWidth - borderAdjuster + 'px';
+}
+
+function closeElementMenuBar() {
+  var menuContainer = document.querySelector('.element-menu-container');
+  menuContainer.parentNode.removeChild(menuContainer);
+}
 
 function createElMenuContainer(element) {
   var container = document.createElement('div');
@@ -179,7 +225,8 @@ function createElementMenu(element) {
                      '<i id="right-justify" style="font-size: 32px;" class="fa fa-align-right fa-2x menu-bar-item black-font"></i>' +
                      '<i id="full-width" style="font-size: 32px;" class="fa fa-arrows-h fa-2x menu-bar-item black-font"></i>' +
                      '<i id="full-height" style="font-size: 32px;" class="fa fa-arrows-v fa-2x menu-bar-item black-font"></i>' +
-                     '<i id="close-menu-bar" style="font-size: 32px;" class="fa fa-close fa-2x menu-bar-item black-font"></i>';
+                     '<i id="resize" style="font-size: 32px;" class="fa fa-arrows fa-2x menu-bar-item black-font"></i>' +
+                     '<i id="delete-element" style="font-size: 32px;" class="fa fa-close fa-2x menu-bar-item black-font"></i>';
   return elMenu;
 }
 
