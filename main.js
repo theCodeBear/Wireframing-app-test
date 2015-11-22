@@ -1,7 +1,6 @@
 'use strict';
 
 // GLOBAL VARIABLES
-// var nthElement = 1;
 var newElement;
 var elements = [];
 
@@ -11,10 +10,8 @@ getElementsFromLocalStorage();
 
 function createNewElement(position) {
   var newElement = document.createElement('div');
-  // newElement.innerText = nthElement++;
   newElement.classList.add('absolute');
   newElement.setAttribute('id', elements.length);
-  newElement.setAttribute('draggable', 'true');
   addStyles(newElement, {
     'border': '1px solid black',
     'top': position.topLeft.y + 'px',
@@ -38,10 +35,11 @@ function createNewElement(position) {
   window.localStorage.setItem('wirez', JSON.stringify(elements));
   console.log('els', elements);
   createElementTextarea(newElement);
+  $('.absolute').draggable();
 }
 
 function insertElementIntoBody(element) {
-  document.body.insertBefore(element, document.getElementById('mainjs'));
+  document.body.insertBefore(element, document.getElementById('firstscript'));
 }
 
 function createElementTextarea(element, text) {
@@ -125,7 +123,6 @@ function getElementsFromLocalStorage() {
       rebornElements.push(document.createElement('div'));
       rebornElements[i].classList.add('absolute');
       rebornElements[i].setAttribute('id', i);
-      rebornElements[i].setAttribute('draggable', 'true');
       addStyles(rebornElements[i], elements[i]);
       insertElementIntoBody(rebornElements[i]);
     }

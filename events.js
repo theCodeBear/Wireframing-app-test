@@ -6,75 +6,30 @@ var topLeft = {x: 0, y: 0}, bottomRight = {x: 0, y: 0};
 var menuWidth = 470;
 var resizing = false;
 var hadBorder = false;
-// var elementDrag = {x: 0, y: 0};
+
+(function($) {
+  $('.absolute').draggable();
+})(jQuery);
 
 document.body.addEventListener('dblclick', function() {
   alert('bring up menu');
 });
 
 document.body.addEventListener('mousedown', function(event) {
-// code for creating dimensions of new element
   topLeft.x = event.clientX;
   topLeft.y = event.clientY;
-// code for handling dragging of elements
 });
 
-document.body.addEventListener('drag', function(event) {
-  // console.log(event);
-  var element = event.path[0];
-  // if clicked on user created (draggable) element
-  if (element.classList.contains('absolute')) {
-    // console.log('time', event.timeStamp);
-    // console.log('x drag', elementDrag.x);
-    // console.log('y drag', elementDrag.y);
-    // elementDrag.x = event.movementX;
-    // elementDrag.y = event.movementY;
+document.body.addEventListener('mouseup', mouseUp);
 
-    // element.style.left += event.movementX;
-    // element.style.right -= event.movementX;
-    // element.style.top += event.movementY;
-    // element.style.bottom -= event.movementY;
-  }
-});
-
-document.body.addEventListener('drop', drop);
-document.body.addEventListener('dragover', allowDrop);
-
-function drop(event) {
-  event.preventDefault();
-  var element = event.path[0];
-  console.log('drop event', event);
-  element.style.left = event.clientX;
-  element.style.top = event.clientY;
-  console.log('el', element);
-}
-
-function allowDrop(event) {
-  event.preventDefault();
-}
-
-document.body.addEventListener('mouseup', mouseDown);
-
-function mouseDown(event) {
-  if (!resizing) {
+function mouseUp(event) {
+  if (!resizing && !event.path[0].classList.contains('ui-draggable-dragging')) {
     bottomRight.x = event.clientX;
     bottomRight.y = event.clientY;
     if (elementIsBigEnough({topLeft, bottomRight}))
       createNewElement({topLeft, bottomRight});
   }
 }
-
-// document.body.addEventListener('dragstart', function(event) {
-//   var element = event.path[0];
-//   console.log('dragging:', element);
-//   // element.style.opacity = 0;
-//   document.body.addEventListener('mousemove', dragAndMove);
-// });
-
-
-// function dragAndMove(event) {
-//   console.log('dragAndMove', event);
-// }
 
 
 // Handles clicking to create and destroy element menu bars
@@ -262,6 +217,7 @@ function createElMenuContainer(element) {
 
 function createElementMenu(element) {
   var elMenu = document.createElement('div');
+  elMenu.style.cursor = 'initial';
   elMenu.classList.add('element-menu');
   elMenu.innerHTML = '<i id="edit-text" style="font-size: 32px;" class="fa fa-pencil-square fa-2x menu-bar-item black-font"></i>' +
                      '<i style="font-size: 32px;" class="fa fa-font fa-2x menu-bar-item"><input id="font-color" type="color" class="menu-bar-item text-color-input menu-color-pickers"></i>' +

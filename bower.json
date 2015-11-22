@@ -20,6 +20,7 @@
     "tests"
   ],
   "dependencies": {
-    "font-awesome": "~4.4.0"
+    "font-awesome": "~4.4.0",
+    "jquery-ui": "~1.11.4"
   }
 }
