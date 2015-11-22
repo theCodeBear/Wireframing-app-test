@@ -8,7 +8,20 @@ var resizing = false;
 var hadBorder = false;
 
 (function($) {
-  $('.absolute').draggable();
+  $('.absolute').draggable({
+    stop: function(event) {
+      event.target.style.bottom = computeBottomOrTopStyle(event.target.style.top, event.target.style.height, 'none', document.body.scrollHeight);
+      event.target.style.right = computeBottomOrTopStyle(event.target.style.left, event.target.style.width, event.target.style.border, document.body.scrollWidth);
+      updateSavedElement(event.target, 'style', {
+        top: event.target.style.top,
+        bottom: event.target.style.bottom,
+        left: event.target.style.left,
+        right: event.target.style.right,
+        height: event.target.style.height,
+        width: event.target.style.width
+      });
+    }
+  });
 })(jQuery);
 
 document.body.addEventListener('dblclick', function() {
@@ -30,6 +43,7 @@ function mouseUp(event) {
       createNewElement({topLeft, bottomRight});
   }
 }
+
 
 
 // Handles clicking to create and destroy element menu bars
@@ -186,7 +200,7 @@ function deleteElementListener(element) {
 // Returns a bottom or right CSS style, given top/left style, element height/width,
 // and document.body.scrollHeight/Width. Returns number of pixels with the 'px' suffix.
 function computeBottomOrTopStyle(topOrLeft, heightOrWidth, border, scrollHeightOrWidth) {
-  // need to subtract by 2 pixel if there is a 1 pixel border for element
+  // need to subtract by 2 pixel if there is a 1 pixel border for element to fix bug in saving process
   var borderAdjuster = (border === 'none') ? 0 : 2;
   topOrLeft = + topOrLeft.slice(0,-2);
   heightOrWidth = + heightOrWidth.slice(0,-2);
