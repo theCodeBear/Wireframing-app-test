@@ -6,15 +6,52 @@ var topLeft = {x: 0, y: 0}, bottomRight = {x: 0, y: 0};
 var menuWidth = 470;
 var resizing = false;
 var hadBorder = false;
+// var elementDrag = {x: 0, y: 0};
 
 document.body.addEventListener('dblclick', function() {
   alert('bring up menu');
 });
 
 document.body.addEventListener('mousedown', function(event) {
+// code for creating dimensions of new element
   topLeft.x = event.clientX;
   topLeft.y = event.clientY;
+// code for handling dragging of elements
 });
+
+document.body.addEventListener('drag', function(event) {
+  // console.log(event);
+  var element = event.path[0];
+  // if clicked on user created (draggable) element
+  if (element.classList.contains('absolute')) {
+    // console.log('time', event.timeStamp);
+    // console.log('x drag', elementDrag.x);
+    // console.log('y drag', elementDrag.y);
+    // elementDrag.x = event.movementX;
+    // elementDrag.y = event.movementY;
+
+    // element.style.left += event.movementX;
+    // element.style.right -= event.movementX;
+    // element.style.top += event.movementY;
+    // element.style.bottom -= event.movementY;
+  }
+});
+
+document.body.addEventListener('drop', drop);
+document.body.addEventListener('dragover', allowDrop);
+
+function drop(event) {
+  event.preventDefault();
+  var element = event.path[0];
+  console.log('drop event', event);
+  element.style.left = event.clientX;
+  element.style.top = event.clientY;
+  console.log('el', element);
+}
+
+function allowDrop(event) {
+  event.preventDefault();
+}
 
 document.body.addEventListener('mouseup', mouseDown);
 
@@ -26,6 +63,18 @@ function mouseDown(event) {
       createNewElement({topLeft, bottomRight});
   }
 }
+
+// document.body.addEventListener('dragstart', function(event) {
+//   var element = event.path[0];
+//   console.log('dragging:', element);
+//   // element.style.opacity = 0;
+//   document.body.addEventListener('mousemove', dragAndMove);
+// });
+
+
+// function dragAndMove(event) {
+//   console.log('dragAndMove', event);
+// }
 
 
 // Handles clicking to create and destroy element menu bars

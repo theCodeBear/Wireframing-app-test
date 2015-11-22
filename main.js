@@ -14,13 +14,15 @@ function createNewElement(position) {
   // newElement.innerText = nthElement++;
   newElement.classList.add('absolute');
   newElement.setAttribute('id', elements.length);
+  newElement.setAttribute('draggable', 'true');
   addStyles(newElement, {
     'border': '1px solid black',
     'top': position.topLeft.y + 'px',
     'left': position.topLeft.x + 'px',
     'bottom': document.body.scrollHeight - position.bottomRight.y + 'px',
     'right': document.body.scrollWidth - position.bottomRight.x + 'px',
-    'fontSize': '16px'
+    'fontSize': '16px',
+    'cursor': 'move'
   });
   insertElementIntoBody(newElement);
   var savedElement = {
@@ -29,7 +31,8 @@ function createNewElement(position) {
     left: newElement.style.left,
     bottom: newElement.style.bottom,
     right: newElement.style.right,
-    fontSize: newElement.style.fontSize
+    fontSize: newElement.style.fontSize,
+    cursor: newElement.style.cursor
   }
   elements.push(savedElement);
   window.localStorage.setItem('wirez', JSON.stringify(elements));
@@ -122,6 +125,7 @@ function getElementsFromLocalStorage() {
       rebornElements.push(document.createElement('div'));
       rebornElements[i].classList.add('absolute');
       rebornElements[i].setAttribute('id', i);
+      rebornElements[i].setAttribute('draggable', 'true');
       addStyles(rebornElements[i], elements[i]);
       insertElementIntoBody(rebornElements[i]);
     }
