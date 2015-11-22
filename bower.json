@@ -1,0 +1,25 @@
+{
+  "name": "wireframingAppTest",
+  "version": "0.0.0",
+  "homepage": "https://github.com/theCodeBear/Wireframing-app-test",
+  "authors": [
+    "Todd Kronenberg <toddkronenberg@gmail.com>"
+  ],
+  "description": "Proof of concept for wireframing app",
+  "main": "",
+  "moduleType": [],
+  "keywords": [
+    "wireframing"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "font-awesome": "~4.4.0"
+  }
+}
