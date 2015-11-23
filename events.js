@@ -3,7 +3,8 @@
 // THIS HOLDS ALL THE EVENT HANDLERS FOR THE APPLICATION
 
 var topLeft = {x: 0, y: 0}, bottomRight = {x: 0, y: 0};
-var menuWidth = 470;
+var menuWidth = 340;
+var menuTop = -220;
 var resizing = false;
 var hadBorder = false;
 
@@ -313,13 +314,12 @@ function handleHorizontalElementMenuPlacement(userElement, parentWidth) {
 
 //handle the various vertical placement needs of the element menu bar when it pops up
 function handleVerticalElementMenuPlacement(userElement) {
-  var top = -60;
   // if menu would be offscreen above and below the screen, move menu to middle of parent element
-  if (userElement.style.top.slice(0,-2) <= -top && userElement.style.bottom.slice(0,-2) <= -top)
-    top = window.getComputedStyle(userElement).getPropertyValue('height').slice(0,-2) / 2;
-  // if menu would be off the top of the screen, move to underneath parent element
-  else if (userElement.style.top.slice(0,-2) <= -top)
-    top = + window.getComputedStyle(userElement).getPropertyValue('height').slice(0,-2) + 20;
-  return top;
+  if (userElement.style.top.slice(0,-2) <= -menuTop && userElement.style.bottom.slice(0,-2) <= -menuTop)
+    menuTop = window.getComputedStyle(userElement).getPropertyValue('height').slice(0,-2) / 2;
+  // if menu would be off the menuTop of the screen, move to underneath parent element
+  else if (userElement.style.top.slice(0,-2) <= -menuTop)
+    menuTop = + window.getComputedStyle(userElement).getPropertyValue('height').slice(0,-2) + 20;
+  return menuTop;
 }
 
