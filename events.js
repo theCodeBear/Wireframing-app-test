@@ -105,6 +105,7 @@ function addElementMenuBarListeners(element) {
   borderListener(element);
   smallerFontListener(element);
   largerFontListener(element);
+  fontWeightListener(element);
   paddingTopListener(element);
   paddingBottomListener(element);
   paddingLeftListener(element);
@@ -155,6 +156,14 @@ function largerFontListener(element) {
   document.querySelector('#larger-font').addEventListener('click', function() {
     element.style.fontSize = + element.style.fontSize.slice(0,-2) + 4 + 'px';
     updateSavedElement(element, 'style', {fontSize: element.style.fontSize});
+  });
+}
+function fontWeightListener(element) {
+  document.querySelector('#font-weight').addEventListener('click', function() {
+    if (!element.style.fontWeight) element.style.fontWeight = 500;
+    else if (element.style.fontWeight === '900') element.style.fontWeight = 100;
+    else element.style.fontWeight = +element.style.fontWeight + 100;
+    updateSavedElement(element, 'style', {fontWeight: element.style.fontWeight});
   });
 }
 function paddingTopListener(element) {
@@ -275,6 +284,7 @@ function createElementMenu(element) {
                      '<i id="toggle-border" style="font-size: 32px;" class="fa fa-square-o fa-2x menu-bar-item black-font"></i>' +
                      '<i id="smaller-font" style="font-size: 21.3333px;" class="fa fa-font fa-lg menu-bar-item black-font"></i>' +
                      '<i id="larger-font" style="font-size: 48px;" class="fa fa-font fa-3x menu-bar-item black-font"></i>' +
+                     '<i id="font-weight" style="font-size: 32px;" class="fa fa-text-width fa-2x menu-bar-item black-font"></i>' +
                      '<i id="padding-top" style="font-size: 32px;" class="fa fa-toggle-down fa-2x menu-bar-item black-font"></i>' +
                      '<i id="padding-bottom" style="font-size: 32px;" class="fa fa-toggle-up fa-2x menu-bar-item black-font"></i>' +
                      '<i id="padding-left" style="font-size: 32px;" class="fa fa-toggle-right fa-2x menu-bar-item black-font"></i>' +
