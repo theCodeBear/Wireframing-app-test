@@ -29,9 +29,9 @@ function jQueryDraggableStop(event) {
   });
 }
 
-document.body.addEventListener('dblclick', function() {
-  alert('bring up menu');
-});
+// document.body.addEventListener('dblclick', function() {
+//   alert('bring up menu');
+// });
 
 document.body.addEventListener('mousedown', function(event) {
   topLeft.x = event.clientX;
@@ -105,6 +105,10 @@ function addElementMenuBarListeners(element) {
   borderListener(element);
   smallerFontListener(element);
   largerFontListener(element);
+  paddingTopListener(element);
+  paddingBottomListener(element);
+  paddingLeftListener(element);
+  paddingRightListener(element);
   leftJustifyListener(element);
   centerJustifyListener(element);
   rightJustifyListener(element);
@@ -153,6 +157,18 @@ function largerFontListener(element) {
     updateSavedElement(element, 'style', {fontSize: element.style.fontSize});
   });
 }
+function paddingTopListener(element) {
+  document.querySelector('#padding-top').addEventListener('click', paddingListenerCallback.bind(this, element, 'paddingTop', 'height'));
+}
+function paddingBottomListener(element) {
+  document.querySelector('#padding-bottom').addEventListener('click', paddingListenerCallback.bind(this, element, 'paddingBottom', 'height'));
+}
+function paddingLeftListener(element) {
+  document.querySelector('#padding-left').addEventListener('click', paddingListenerCallback.bind(this, element, 'paddingLeft', 'width'));
+}
+function paddingRightListener(element) {
+  document.querySelector('#padding-right').addEventListener('click', paddingListenerCallback.bind(this, element, 'paddingRight', 'width'));
+}
 function leftJustifyListener(element) {
   document.querySelector('#left-justify').addEventListener('click', function() {
     element.style.textAlign = 'left';
@@ -173,14 +189,14 @@ function rightJustifyListener(element) {
 }
 function fullWidthListener(element) {
   document.querySelector('#full-width').addEventListener('click', function() {
-    element.style.width = '100%';
+    element.style.width = document.body.scrollWidth + 'px';
     element.style.left = '0';
     updateSavedElement(element, 'style', {width: element.style.width, left: element.style.left});
   });
 }
 function fullHeightListener(element) {
   document.querySelector('#full-height').addEventListener('click', function() {
-    element.style.height = '100%';
+    element.style.height = document.body.scrollHeight + 'px';
     element.style.top = '0';
     updateSavedElement(element, 'style', {height: element.style.height, top: element.style.top});
   });
@@ -206,6 +222,16 @@ function deleteElementListener(element) {
 
 
 // RELATED FUNCTIONS
+
+// Handler function for all four padding events from the element menu bar.
+// Parameters are the element, padding type ('paddingTop/paddingBottom/paddingLeft/paddingRight'),
+// and dimension ('height/width')
+function paddingListenerCallback(element, paddingType, dimension) {
+  if (element.style[paddingType] === '0px') element.style[paddingType] = (+element.style[dimension].slice(0,-2) / 10) + 'px';
+  else if (+element.style[paddingType].slice(0,-2) >= +element.style[dimension].slice(0,-2) - (element.style.fontSize.slice(0,-2)*1.9)) element.style[paddingType] = '0px';
+  else element.style[paddingType] = +element.style[paddingType].slice(0,-2) + (element.style[dimension].slice(0,-2)/10) + 'px';
+  updateSavedElement(element, 'style', {[paddingType]: element.style[paddingType]});
+}
 
 // Returns a bottom or right CSS style, given top/left style, element height/width,
 // and document.body.scrollHeight/Width. Returns number of pixels with the 'px' suffix.
@@ -249,6 +275,10 @@ function createElementMenu(element) {
                      '<i id="toggle-border" style="font-size: 32px;" class="fa fa-square-o fa-2x menu-bar-item black-font"></i>' +
                      '<i id="smaller-font" style="font-size: 21.3333px;" class="fa fa-font fa-lg menu-bar-item black-font"></i>' +
                      '<i id="larger-font" style="font-size: 48px;" class="fa fa-font fa-3x menu-bar-item black-font"></i>' +
+                     '<i id="padding-top" style="font-size: 32px;" class="fa fa-toggle-down fa-2x menu-bar-item black-font"></i>' +
+                     '<i id="padding-bottom" style="font-size: 32px;" class="fa fa-toggle-up fa-2x menu-bar-item black-font"></i>' +
+                     '<i id="padding-left" style="font-size: 32px;" class="fa fa-toggle-right fa-2x menu-bar-item black-font"></i>' +
+                     '<i id="padding-right" style="font-size: 32px;" class="fa fa-toggle-left fa-2x menu-bar-item black-font"></i>' +
                      '<i id="left-justify" style="font-size: 32px;" class="fa fa-align-left fa-2x menu-bar-item black-font"></i>' +
                      '<i id="center-justify" style="font-size: 32px;" class="fa fa-align-center fa-2x menu-bar-item black-font"></i>' +
                      '<i id="right-justify" style="font-size: 32px;" class="fa fa-align-right fa-2x menu-bar-item black-font"></i>' +

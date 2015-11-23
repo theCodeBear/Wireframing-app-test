@@ -49,6 +49,7 @@ body {
 /* Classes to use dynamically */
 .absolute {
   position: absolute;
+  box-sizing: border-box;
 }
 
 .resize {
