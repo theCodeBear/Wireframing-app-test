@@ -71,7 +71,7 @@ function addStyle(element, styleName, styleValue) {
 function addStyles(element, styles) {
   for (var key in styles) {
     if (key === 'innerText') element.innerText = styles[key];
-    else if (key.match(/^attr:/)) element.setAttribute(key.split(':')[1], styles[key]);
+    else if (key.match(/^attr:/) && styles[key]) element.setAttribute(key.split(':')[1], styles[key]);
     else element.style[key] = styles[key];
   }
 }
@@ -90,7 +90,8 @@ function elementIsBigEnough(position) {
 // updating a saved element with new user chosen styles or text.
 // the property argument is 'innerText', 'style', or 'attribute'.
 // if property is 'style', value is {styleName: value, styleName: value, etc}
-// if property is 'innerText' or 'attribute', value is a string.
+// if property is 'innerText', value is a string
+// if property is 'attribute', value is {propName: value, propName: value, etc}
 function updateSavedElement(element, property, value) {
   if (property === 'innerText')
     elements[element.getAttribute('id')][property] = value;
@@ -130,9 +131,24 @@ function getElementsFromLocalStorage() {
       rebornElements[i].classList.add('absolute');
       rebornElements[i].setAttribute('id', i);
       addStyles(rebornElements[i], elements[i]);
+      if (rebornElements[i].hasAttribute('has-image-child')) createImgInDivFromLS(rebornElements[i]);
       insertElementIntoBody(rebornElements[i]);
     }
   }
+}
+
+function createImgInDivFromLS(element) {
+  var img = document.createElement('img');
+  img.setAttribute('src', element.getAttribute('has-image-child'));
+  addStyles(img, {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    maxWidth: '100%',
+    maxHeight: '100%',
+    zIndex: element.style.zIndex - 1
+  });
+  element.appendChild(img);
 }
 
 

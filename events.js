@@ -7,7 +7,6 @@ var menuWidth = 340;
 var menuTop = -260;
 var resizing = false;
 var hadBorder = false;
-var inputting = false;
 
 (function($) {
   $('.absolute').draggable({start: jQueryDraggableStart, stop: jQueryDraggableStop});
@@ -56,6 +55,7 @@ function mouseUp(event) {
 // Handles clicking to create and destroy element menu bars
 document.body.addEventListener('click', function(event) {
   var element = event.path[0];
+  if (element.tagName === 'IMG') element = element.parentNode;
   // console.log(element);
   // if the resize button on the menu bar has been clicked and the user clicks off that element, turn resize off
   if (resizing && !element.classList.contains('resize') && element.getAttribute('id') !== 'resize') {
@@ -70,16 +70,51 @@ document.body.addEventListener('click', function(event) {
       bottom: resizedElement.style.bottom,
       right: resizedElement.style.right
     });
-  // if an element has attribute 'data-textfield' and clicks on another element that isn't the link button,
+  // if an element has attribute 'data-link-textfield' and clicks on another element that isn't the link button,
   // then destroy text field and link to given value on double click of element
-  } else if (document.querySelector('[data-textfield="true"') && element.getAttribute('id') !== 'link') {
+  } else if (document.querySelector('[data-link-textfield="true"]') && element.getAttribute('id') !== 'link') {
     var textField = document.getElementById('linkField');
-    var linkedDiv = document.querySelector('[data-textfield="true"');
+    var linkedDiv = document.querySelector('[data-link-textfield="true"]');
     var linkTo = textField.value;
-    linkedDiv.removeAttribute('data-textfield');
+    linkedDiv.removeAttribute('data-link-textfield');
     linkedDiv.removeChild(textField);
     linkedDiv.setAttribute('ondblclick', 'createLink("'+textField.value+'")');
     updateSavedElement(linkedDiv, 'attribute', {ondblclick: linkedDiv.getAttribute('ondblclick')});
+  // if an element has attribute 'data-img-textfield' and clicks on another element that isn't the img button,
+  // then destroy text field and create img element in div with the inputted url
+  } else if (document.querySelector('[data-img-textfield="true"]') && element.getAttribute('id') !== 'add-image') {
+    var textField = document.getElementById('imgField');
+    var containingDiv = document.querySelector('[data-img-textfield="true"]');
+    var imgUrl = textField.value.trim();
+    containingDiv.removeAttribute('data-img-textfield');
+    containingDiv.removeChild(textField);
+    // if there is image url input and div has no img tag
+    if (imgUrl && !containingDiv.contains(document.querySelector('img'))) {
+      var img = document.createElement('img');
+      img.setAttribute('src', imgUrl);
+      addStyles(img, {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        maxWidth: '100%',
+        maxHeight: '100%',
+        zIndex: containingDiv.style.zIndex - 1
+      });
+      containingDiv.innerText = '';
+      containingDiv.appendChild(img);
+      containingDiv.setAttribute('has-image-child', imgUrl);
+      updateSavedElement(containingDiv, 'attribute', {'has-image-child': imgUrl});
+      updateSavedElement(containingDiv, 'innerText', containingDiv.innerText);
+    // if there is image url input and div already has an img tag
+    } else if (imgUrl && containingDiv.contains(document.querySelector('img'))) {
+      containingDiv.getElementsByTagName('img')[0].setAttribute('src', imgUrl);
+      updateSavedElement(containingDiv, 'attribute', {'has-image-child': imgUrl});
+    // if there is no image url input and div already has an img tag
+    } else if (containingDiv.contains(document.querySelector('img'))) {
+      containingDiv.removeAttribute('has-image-child');
+      containingDiv.removeChild(containingDiv.getElementsByTagName('img')[0]);
+      updateSavedElement(containingDiv, 'attribute', {'has-image-child': ''});
+    }
   }
   // if an element is clicked that isn't the body or the menu and menu doesn't exist, create the menu bar
   if (element != document.body &&
@@ -101,12 +136,12 @@ document.body.addEventListener('click', function(event) {
 function addTextareaListener() {
   document.querySelector('#temporaryInput').addEventListener('blur', function(event) {
     var textarea = event.path[0];
-    var input = textarea.value;
+    var input = textarea.value.trim();
     textarea.parentNode.innerText = input;
     updateSavedElement(event.path[1], 'innerText', input);
-    textarea.removeEventListener('blur', function() {
-      textarea.parentNode.removeChild(textarea);
-    });
+    // textarea.removeEventListener('blur', function() {
+      // textarea.parentNode.removeChild(textarea);
+    // });
   });
 }
 
@@ -129,6 +164,7 @@ function addElementMenuBarListeners(element) {
   fullHeightListener(element);
   resizeListener(element);
   makeCircleListener(element);
+  addImageListener(element);
   linkListener(element);
   deleteElementListener(element);
 }
@@ -242,30 +278,11 @@ function makeCircleListener(element) {
     updateSavedElement(element, 'style', {borderRadius: element.style.borderRadius});
   });
 }
+function addImageListener(element) {
+  document.querySelector('#add-image').addEventListener('click', createTempTextfield.bind(this, element, 'imgField'));
+}
 function linkListener(element) {
-  document.querySelector('#link').addEventListener('click', function() {
-    var textField = document.createElement('input');
-    textField.setAttribute('type', 'text');
-    textField.setAttribute('id', 'linkField');
-    textField.setAttribute('placeholder', 'URL to link to...');
-    textField.setAttribute('value', element.getAttribute('ondblclick') ? element.getAttribute('ondblclick').split('"')[1] : '');
-    addStyles(textField, {
-      width: '100%',
-      height: '100%',
-      position: 'absolute',
-      left: 0,
-      top: 0,
-      padding: 0,
-      border: 0,
-      textAlign: 'center',
-      borderRadius: element.style.borderRadius,
-      outline: 'none'
-    });
-    element.appendChild(textField);
-    textField.focus();
-    element.setAttribute('data-textfield', 'true');
-    inputting = true;
-  });
+  document.querySelector('#link').addEventListener('click', createTempTextfield.bind(this, element, 'linkField'));
 }
 function deleteElementListener(element) {
   document.querySelector('#delete-element').addEventListener('click', function() {
@@ -279,6 +296,39 @@ function deleteElementListener(element) {
 
 function createLink(link) {
   return window.location = link;
+}
+
+// creates temporary text input field in element when link or image menu buttons are clicked.
+// takes as arguments the element and the id for either the input field ('linkField' or 'imgField')
+function createTempTextfield(element, inputId) {
+  var textField = document.createElement('input');
+  textField.setAttribute('type', 'text');
+  textField.setAttribute('id', inputId);
+  if (inputId === 'linkField') {
+    textField.setAttribute('placeholder', 'URL to link to...');
+    textField.setAttribute('value', element.getAttribute('ondblclick') ? element.getAttribute('ondblclick').split('"')[1] : '');
+    element.setAttribute('data-link-textfield', 'true');
+  } else if (inputId === 'imgField') {
+    textField.setAttribute('placeholder', 'URL to image...');
+    element.setAttribute('data-img-textfield', 'true');
+    if (element.contains(document.querySelector('img')))
+      textField.setAttribute('value', element.getElementsByTagName('img')[0].getAttribute('src'));
+  }
+  addStyles(textField, {
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    padding: 0,
+    border: 0,
+    textAlign: 'center',
+    borderRadius: element.style.borderRadius,
+    outline: 'none',
+    zIndex: element.style.zIndex
+  });
+  element.appendChild(textField);
+  textField.focus();
 }
 
 // Handler function for all four padding events from the element menu bar.
@@ -345,6 +395,7 @@ function createElementMenu(element) {
                      '<i id="full-height" style="font-size: 32px;" class="fa fa-arrows-v fa-2x menu-bar-item black-font"></i>' +
                      '<i id="resize" style="font-size: 32px;" class="fa fa-arrows fa-2x menu-bar-item black-font"></i>' +
                      '<i id="circular" style="font-size: 32px;" class="fa fa-genderless fa-2x menu-bar-item black-font"></i>' +
+                     '<i id="add-image" style="font-size: 32px;" class="fa fa-image fa-2x menu-bar-item black-font"></i>' +
                      '<i id="link" style="font-size: 32px;" class="fa fa-link fa-2x menu-bar-item black-font"></i>' +
                      '<i id="delete-element" style="font-size: 32px;" class="fa fa-close fa-2x menu-bar-item black-font"></i>';
   return elMenu;
