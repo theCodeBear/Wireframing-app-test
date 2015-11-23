@@ -4,7 +4,7 @@
 
 var topLeft = {x: 0, y: 0}, bottomRight = {x: 0, y: 0};
 var menuWidth = 340;
-var menuTop = -220;
+var menuTop = -260;
 var resizing = false;
 var hadBorder = false;
 
@@ -117,6 +117,7 @@ function addElementMenuBarListeners(element) {
   fullWidthListener(element);
   fullHeightListener(element);
   resizeListener(element);
+  makeCircleListener(element)
   deleteElementListener(element);
 }
 
@@ -223,6 +224,12 @@ function resizeListener(element) {
     document.querySelector('.element-menu').style.visibility = 'hidden';
   });
 }
+function makeCircleListener(element) {
+  document.querySelector('#circular').addEventListener('click', function() {
+    element.style.borderRadius = (!element.style.borderRadius || element.style.borderRadius === '0px') ? '50%' : '0px';
+    updateSavedElement(element, 'style', {borderRadius: element.style.borderRadius});
+  });
+}
 function deleteElementListener(element) {
   document.querySelector('#delete-element').addEventListener('click', function() {
     deleteElement(element.getAttribute('id'));
@@ -296,6 +303,7 @@ function createElementMenu(element) {
                      '<i id="full-width" style="font-size: 32px;" class="fa fa-arrows-h fa-2x menu-bar-item black-font"></i>' +
                      '<i id="full-height" style="font-size: 32px;" class="fa fa-arrows-v fa-2x menu-bar-item black-font"></i>' +
                      '<i id="resize" style="font-size: 32px;" class="fa fa-arrows fa-2x menu-bar-item black-font"></i>' +
+                     '<i id="circular" style="font-size: 32px;" class="fa fa-genderless fa-2x menu-bar-item black-font"></i>' +
                      '<i id="delete-element" style="font-size: 32px;" class="fa fa-close fa-2x menu-bar-item black-font"></i>';
   return elMenu;
 }
