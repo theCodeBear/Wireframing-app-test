@@ -7,6 +7,7 @@ var menuWidth = 340;
 var menuTop = -260;
 var resizing = false;
 var hadBorder = false;
+var inputting = false;
 
 (function($) {
   $('.absolute').draggable({start: jQueryDraggableStart, stop: jQueryDraggableStop});
@@ -69,6 +70,16 @@ document.body.addEventListener('click', function(event) {
       bottom: resizedElement.style.bottom,
       right: resizedElement.style.right
     });
+  // if an element has attribute 'data-textfield' and clicks on another element that isn't the link button,
+  // then destroy text field and link to given value on double click of element
+  } else if (document.querySelector('[data-textfield="true"') && element.getAttribute('id') !== 'link') {
+    var textField = document.getElementById('linkField');
+    var linkedDiv = document.querySelector('[data-textfield="true"');
+    var linkTo = textField.value;
+    linkedDiv.removeAttribute('data-textfield');
+    linkedDiv.removeChild(textField);
+    linkedDiv.setAttribute('ondblclick', 'createLink("'+textField.value+'")');
+    updateSavedElement(linkedDiv, 'attribute', {ondblclick: linkedDiv.getAttribute('ondblclick')});
   }
   // if an element is clicked that isn't the body or the menu and menu doesn't exist, create the menu bar
   if (element != document.body &&
@@ -117,7 +128,8 @@ function addElementMenuBarListeners(element) {
   fullWidthListener(element);
   fullHeightListener(element);
   resizeListener(element);
-  makeCircleListener(element)
+  makeCircleListener(element);
+  linkListener(element);
   deleteElementListener(element);
 }
 
@@ -230,6 +242,31 @@ function makeCircleListener(element) {
     updateSavedElement(element, 'style', {borderRadius: element.style.borderRadius});
   });
 }
+function linkListener(element) {
+  document.querySelector('#link').addEventListener('click', function() {
+    var textField = document.createElement('input');
+    textField.setAttribute('type', 'text');
+    textField.setAttribute('id', 'linkField');
+    textField.setAttribute('placeholder', 'URL to link to...');
+    textField.setAttribute('value', element.getAttribute('ondblclick') ? element.getAttribute('ondblclick').split('"')[1] : '');
+    addStyles(textField, {
+      width: '100%',
+      height: '100%',
+      position: 'absolute',
+      left: 0,
+      top: 0,
+      padding: 0,
+      border: 0,
+      textAlign: 'center',
+      borderRadius: element.style.borderRadius,
+      outline: 'none'
+    });
+    element.appendChild(textField);
+    textField.focus();
+    element.setAttribute('data-textfield', 'true');
+    inputting = true;
+  });
+}
 function deleteElementListener(element) {
   document.querySelector('#delete-element').addEventListener('click', function() {
     deleteElement(element.getAttribute('id'));
@@ -239,6 +276,10 @@ function deleteElementListener(element) {
 
 
 // RELATED FUNCTIONS
+
+function createLink(link) {
+  return window.location = link;
+}
 
 // Handler function for all four padding events from the element menu bar.
 // Parameters are the element, padding type ('paddingTop/paddingBottom/paddingLeft/paddingRight'),
@@ -304,6 +345,7 @@ function createElementMenu(element) {
                      '<i id="full-height" style="font-size: 32px;" class="fa fa-arrows-v fa-2x menu-bar-item black-font"></i>' +
                      '<i id="resize" style="font-size: 32px;" class="fa fa-arrows fa-2x menu-bar-item black-font"></i>' +
                      '<i id="circular" style="font-size: 32px;" class="fa fa-genderless fa-2x menu-bar-item black-font"></i>' +
+                     '<i id="link" style="font-size: 32px;" class="fa fa-link fa-2x menu-bar-item black-font"></i>' +
                      '<i id="delete-element" style="font-size: 32px;" class="fa fa-close fa-2x menu-bar-item black-font"></i>';
   return elMenu;
 }
