@@ -3,6 +3,7 @@
 // GLOBAL VARIABLES
 var newElement;
 var elements = [];
+var latestZindex;
 
 getElementsFromLocalStorage();
 
@@ -19,6 +20,7 @@ function createNewElement(position) {
     'bottom': document.body.scrollHeight - position.bottomRight.y + 'px',
     'right': document.body.scrollWidth - position.bottomRight.x + 'px',
     'fontSize': '16px',
+    'zIndex': latestZindex,
     'cursor': 'move'
   });
   insertElementIntoBody(newElement);
@@ -35,7 +37,7 @@ function createNewElement(position) {
   window.localStorage.setItem('wirez', JSON.stringify(elements));
   console.log('els', elements);
   createElementTextarea(newElement);
-  $('.absolute').draggable();
+  $('.absolute').draggable({start: jQueryDraggableStart, stop: jQueryDraggableStop});
 }
 
 function insertElementIntoBody(element) {
@@ -116,6 +118,7 @@ function deleteElement(elementId) {
 }
 
 function getElementsFromLocalStorage() {
+  latestZindex = JSON.parse(window.localStorage.getItem('wirezZindex')) || 1;
   elements = JSON.parse(window.localStorage.getItem('wirez')) || [];
   if (elements.length) {
     var rebornElements = [];

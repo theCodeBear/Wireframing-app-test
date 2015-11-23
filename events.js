@@ -8,21 +8,26 @@ var resizing = false;
 var hadBorder = false;
 
 (function($) {
-  $('.absolute').draggable({
-    stop: function(event) {
-      event.target.style.bottom = computeBottomOrTopStyle(event.target.style.top, event.target.style.height, 'none', document.body.scrollHeight);
-      event.target.style.right = computeBottomOrTopStyle(event.target.style.left, event.target.style.width, event.target.style.border, document.body.scrollWidth);
-      updateSavedElement(event.target, 'style', {
-        top: event.target.style.top,
-        bottom: event.target.style.bottom,
-        left: event.target.style.left,
-        right: event.target.style.right,
-        height: event.target.style.height,
-        width: event.target.style.width
-      });
-    }
-  });
+  $('.absolute').draggable({start: jQueryDraggableStart, stop: jQueryDraggableStop});
 })(jQuery);
+
+function jQueryDraggableStart(event) {
+  event.target.style.zIndex = ++latestZindex;
+  window.localStorage.setItem('wirezZindex', latestZindex);
+}
+function jQueryDraggableStop(event) {
+  event.target.style.bottom = computeBottomOrTopStyle(event.target.style.top, event.target.style.height, 'none', document.body.scrollHeight);
+  event.target.style.right = computeBottomOrTopStyle(event.target.style.left, event.target.style.width, event.target.style.border, document.body.scrollWidth);
+  updateSavedElement(event.target, 'style', {
+    top: event.target.style.top,
+    bottom: event.target.style.bottom,
+    left: event.target.style.left,
+    right: event.target.style.right,
+    height: event.target.style.height,
+    width: event.target.style.width,
+    zIndex: event.target.style.zIndex
+  });
+}
 
 document.body.addEventListener('dblclick', function() {
   alert('bring up menu');
@@ -53,6 +58,7 @@ document.body.addEventListener('click', function(event) {
   // if the resize button on the menu bar has been clicked and the user clicks off that element, turn resize off
   if (resizing && !element.classList.contains('resize') && element.getAttribute('id') !== 'resize') {
     resizing = false;
+    $('.absolute').draggable('enable');
     var resizedElement = document.querySelector('.resize');
     resizedElement.style.border = (hadBorder) ? '1px solid black' : 'none';
     resizedElement.classList.remove('resize');
@@ -67,6 +73,9 @@ document.body.addEventListener('click', function(event) {
   if (element != document.body &&
       !element.classList.contains('element-menu') &&
       !document.querySelector('.element-menu')) {
+    element.style.zIndex = ++latestZindex;
+    window.localStorage.setItem('wirezZindex', latestZindex);
+    updateSavedElement(element, 'style', {zIndex: element.style.zIndex});
     var menuContainer = createElMenuContainer(element);
     var elMenu = createElementMenu(element);
     menuContainer.appendChild(elMenu);
@@ -178,6 +187,7 @@ function fullHeightListener(element) {
 }
 function resizeListener(element) {
   document.querySelector('#resize').addEventListener('click', function() {
+    $('.absolute').draggable('disable');
     element.classList.add('resize');
     // need to create temporary border for resizing in case border is off
     hadBorder = (element.style.border === 'none') ? false : true;
