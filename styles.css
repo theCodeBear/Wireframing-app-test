@@ -120,6 +120,9 @@ input[type='text'].page-menu-input {
 .absolute {
   position: absolute;
   box-sizing: border-box;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
 }
 
 .resize {

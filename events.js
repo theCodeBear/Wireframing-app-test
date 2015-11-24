@@ -7,6 +7,7 @@ var menuWidth = 340;
 var menuTop = -260;
 var resizing = false;
 var hadBorder = false;
+var intervalId;
 
 (function($) {
   $('.absolute').draggable({start: jQueryDraggableStart, stop: jQueryDraggableStop});
@@ -17,8 +18,8 @@ function jQueryDraggableStart(event) {
   window.localStorage.setItem('wirezZindex', latestZindex);
 }
 function jQueryDraggableStop(event) {
-  event.target.style.bottom = computeBottomOrTopStyle(event.target.style.top, event.target.style.height, 'none', document.body.scrollHeight);
-  event.target.style.right = computeBottomOrTopStyle(event.target.style.left, event.target.style.width, event.target.style.border, document.body.scrollWidth);
+  event.target.style.bottom = computeBottomOrRightStyle(event.target.style.top, event.target.style.height, 'none', document.body.scrollHeight);
+  event.target.style.right = computeBottomOrRightStyle(event.target.style.left, event.target.style.width, event.target.style.border, document.body.scrollWidth);
   updateSavedElement(event.target, 'style', {
     top: event.target.style.top,
     bottom: event.target.style.bottom,
@@ -85,14 +86,42 @@ document.body.addEventListener('dblclick', function(event) {
 //   });
 // }
 
+
 document.body.addEventListener('mousedown', function(event) {
   topLeft.x = event.clientX;
   topLeft.y = event.clientY;
+  // code for drawing outline of element as user drags while creating element:
+  if (event.path[0].tagName === 'BODY') {
+    var outlineElement = document.createElement('div');
+    outlineElement.setAttribute('id', 'outline-element');
+    addStyles(outlineElement, {
+      border: '1px dashed black',
+      position: 'absolute',
+      top: topLeft.y+'px',
+      left: topLeft.x+'px'
+    });
+    document.body.appendChild(outlineElement);
+    intervalId = window.setInterval(function() {
+      document.body.addEventListener('mousemove', mousemoveHandler);
+    });
+  }
 });
+
+function mousemoveHandler(event, outlineElement) {
+  var outlineElement = document.querySelector('#outline-element');
+  outlineElement.style.width = event.pageX - outlineElement.style.left.slice(0,-2) + 'px';
+  outlineElement.style.height = event.pageY - outlineElement.style.top.slice(0,-2)+ 'px';
+  document.body.removeEventListener('mousemove', mousemoveHandler);
+}
 
 document.body.addEventListener('mouseup', mouseUp);
 
 function mouseUp(event) {
+  document.body.removeEventListener('mousemove', mousemoveHandler);
+  if (document.getElementById('outline-element')) {
+    document.body.removeChild(document.querySelector('#outline-element'));
+    window.clearInterval(intervalId);
+  }
   if (!resizing && !event.path[0].classList.contains('ui-draggable-dragging')) {
     bottomRight.x = event.clientX;
     bottomRight.y = event.clientY;
@@ -115,8 +144,8 @@ document.body.addEventListener('click', function(event) {
     var resizedElement = document.querySelector('.resize');
     resizedElement.style.border = (hadBorder) ? '1px solid black' : 'none';
     resizedElement.classList.remove('resize');
-    resizedElement.style.bottom = computeBottomOrTopStyle(resizedElement.style.top, resizedElement.style.height, resizedElement.style.border, document.body.scrollHeight);
-    resizedElement.style.right = computeBottomOrTopStyle(resizedElement.style.left, resizedElement.style.width, resizedElement.style.border, document.body.scrollWidth);
+    resizedElement.style.bottom = computeBottomOrRightStyle(resizedElement.style.top, resizedElement.style.height, resizedElement.style.border, document.body.scrollHeight);
+    resizedElement.style.right = computeBottomOrRightStyle(resizedElement.style.left, resizedElement.style.width, resizedElement.style.border, document.body.scrollWidth);
     updateSavedElement(resizedElement, 'style', {
       bottom: resizedElement.style.bottom,
       right: resizedElement.style.right
@@ -400,7 +429,7 @@ function paddingListenerCallback(element, paddingType, dimension) {
 
 // Returns a bottom or right CSS style, given top/left style, element height/width,
 // and document.body.scrollHeight/Width. Returns number of pixels with the 'px' suffix.
-function computeBottomOrTopStyle(topOrLeft, heightOrWidth, border, scrollHeightOrWidth) {
+function computeBottomOrRightStyle(topOrLeft, heightOrWidth, border, scrollHeightOrWidth) {
   // need to subtract by 2 pixel if there is a 1 pixel border for element to fix bug in saving process
   var borderAdjuster = (border === 'none') ? 0 : 2;
   topOrLeft = + topOrLeft.slice(0,-2);

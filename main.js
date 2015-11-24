@@ -46,7 +46,7 @@ function insertElementIntoBody(element) {
 
 function createElementTextarea(element, text) {
   var textarea = document.createElement('textarea');
-  updateTextNode(textarea, text.trim() ? text : '');
+  updateTextNode(textarea, text ? text : '');
   textarea.setAttribute('placeholder', 'Type something...');
   addStyles(textarea, {
     'width': '100%',
