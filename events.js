@@ -30,9 +30,60 @@ function jQueryDraggableStop(event) {
   });
 }
 
-// document.body.addEventListener('dblclick', function() {
-//   alert('bring up menu');
-// });
+document.body.addEventListener('dblclick', function(event) {
+  if (event.path[0].nodeName === 'BODY') {
+    Array.prototype.slice.call(document.querySelectorAll('.absolute')).forEach(function(el) {
+      el.classList.add('dark-and-blurry');
+    });
+    var menu = document.createElement('div');
+    addStyles(menu, {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      height: '100%',
+      width: '100%',
+      textAlign: 'center',
+      fontSize: '32px',
+      fontWeight: 900,
+      color: 'white',
+      zIndex: latestZindex,
+      backgroundColor: 'rgba(0,0,0,0.8)'
+    });
+    menu.setAttribute('id', 'page-menu');
+    menu.innerHTML = '<p>PAGE MENU</p>' +
+                     '<label class="page-menu-label">Page Title</label><input id="page-title" type="text" class="page-menu-button" placeholder="Page Title">' +
+                     '<label class="page-menu-label">Page URL Path</label><input id="page-url" type="text" class="page-menu-button" placeholder="Page URL Path">' +
+                     '<label class="page-menu-label">Background Color</label><input id="body-backgroundcolor" type="color" class="page-menu-button" value="#FFFFFF">' +
+                     '<label class="page-menu-label">Use Icons</label>' +
+                     '<div>' +
+                     '<i class="fa fa-bars page-menu-icons"></i>' +
+                     '<i class="fa fa-comment page-menu-icons"></i>' +
+                     '<i class="fa fa-info-circle page-menu-icons"></i>' +
+                     '<i class="fa fa-plus-circle page-menu-icons"></i>' +
+                     '<i class="fa fa-minus-circle page-menu-icons"></i>' +
+                     '<i class="fa fa-remove page-menu-icons"></i>' +
+                     '<i class="fa fa-search page-menu-icons"></i>' +
+                     '<i class="fa fa-star page-menu-icons"></i>' +
+                     '<i class="fa fa-heart page-menu-icons"></i>' +
+                     '<i class="fa fa-user page-menu-icons"></i>' +
+                     '</div>' +
+                     '<label class="page-menu-label">Page Options</label>' +
+                     '<div><button class="page-menu-toggle-button selected">View</button>' +
+                     '<button class="page-menu-toggle-button not-selected">Edit</button></div>' +
+                     // '<label for="view" class="page-menu-toggle-label">View</label><input type="checkbox" name="view">' +
+                     // '<label for="edit" class="page-menu-toggle-label">Edit</label><input type="checkbox" name="edit">' +
+                     '<button onclick="closePageMenu()">Close</button>';
+    document.body.appendChild(menu);
+    // pageMenuToggleEventCaller();
+  }
+});
+
+// function pageMenuToggleEventCaller() {
+//   console.log('event made');
+//   document.querySelector('.not-selected').addEventListener(function(event) {
+//     document.querySelector('.page-menu-toggle-button').classList.toggle('not-selected selected');
+//   });
+// }
 
 document.body.addEventListener('mousedown', function(event) {
   topLeft.x = event.clientX;
@@ -117,8 +168,10 @@ document.body.addEventListener('click', function(event) {
     }
   }
   // if an element is clicked that isn't the body or the menu and menu doesn't exist, create the menu bar
+// NEED TO CHANGE THIS IF TO ONLY RUN WHEN USER CREATED ELEMENTS ARE CLICKED WHEN MENU AIN'T UP
   if (element != document.body &&
       !element.classList.contains('element-menu') &&
+      // !document.querySelector('#page-menu') &&
       !document.querySelector('.element-menu')) {
     element.style.zIndex = ++latestZindex;
     window.localStorage.setItem('wirezZindex', latestZindex);
@@ -360,6 +413,13 @@ function computeBottomOrTopStyle(topOrLeft, heightOrWidth, border, scrollHeightO
 function closeElementMenuBar() {
   var menuContainer = document.querySelector('.element-menu-container');
   menuContainer.parentNode.removeChild(menuContainer);
+}
+
+function closePageMenu() {
+  document.body.removeChild(document.getElementById('page-menu'));
+  Array.prototype.slice.call(document.querySelectorAll('.absolute')).forEach(function(el) {
+      el.classList.remove('dark-and-blurry');
+    });
 }
 
 function createElMenuContainer(element) {

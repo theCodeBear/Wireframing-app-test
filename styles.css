@@ -33,6 +33,57 @@ body {
   color: black;
 }
 
+.dark-and-blurry {
+  -webkit-filter: blur(5px) brightness(50%);
+}
+
+.page-menu-label {
+  font-weight: 100;
+  display: block;
+  width: 50%;
+  font-size: 0.8em;
+  font-family: sans-serif;
+  text-align: left;
+  margin-left: 10%;
+}
+
+.page-menu-icons {
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 1.4em;
+}
+
+.page-menu-button {
+  display: block;
+  margin: 0 auto;
+  width: 50%;
+  height: 1.5em;
+  font-size: 0.7em;
+  text-align: center;
+  background-color: transparent;
+  color: white;
+  font-weight: 100;
+  margin-bottom: 2em;
+  border: none;
+  border-bottom: 2px solid white;
+}
+
+.page-menu-toggle-button {
+  font-size: 0.8em;
+  margin-top: 1.2em;
+  background-color: gray;
+  border: none;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  width: 5em;
+  font-weight: 200;
+  outline: none;
+}
+
+.selected {
+  background-color: white;
+}
+
 .menu-color-pickers {
   width: 26px;
   height: 30px;
