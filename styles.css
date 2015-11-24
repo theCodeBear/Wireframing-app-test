@@ -45,6 +45,11 @@ body {
   font-family: sans-serif;
   text-align: left;
   margin-left: 10%;
+  margin-bottom: 0.2em;
+}
+
+input[type='text'].page-menu-input {
+  border-bottom: 2px solid white;
 }
 
 .page-menu-icons {
@@ -53,7 +58,7 @@ body {
   margin-bottom: 1.4em;
 }
 
-.page-menu-button {
+.page-menu-input {
   display: block;
   margin: 0 auto;
   width: 50%;
@@ -65,12 +70,12 @@ body {
   font-weight: 100;
   margin-bottom: 2em;
   border: none;
-  border-bottom: 2px solid white;
+  outline: none;
 }
 
 .page-menu-toggle-button {
   font-size: 0.8em;
-  margin-top: 1.2em;
+  /*margin-top: 1em;*/
   background-color: gray;
   border: none;
   padding-top: 10px;
@@ -78,6 +83,17 @@ body {
   width: 5em;
   font-weight: 200;
   outline: none;
+}
+
+.close-page-menu {
+  font-size: 1.2em;
+  width: 10em;
+  margin-top: 1em;
+  border: 2px solid white;
+  font-weight: 100;
+  background-color: transparent;
+  color: white;
+  border-radius: 15px;
 }
 
 .selected {

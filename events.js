@@ -51,14 +51,14 @@ document.body.addEventListener('dblclick', function(event) {
     });
     menu.setAttribute('id', 'page-menu');
     menu.innerHTML = '<p>PAGE MENU</p>' +
-                     '<label class="page-menu-label">Page Title</label><input id="page-title" type="text" class="page-menu-button" placeholder="Page Title">' +
-                     '<label class="page-menu-label">Page URL Path</label><input id="page-url" type="text" class="page-menu-button" placeholder="Page URL Path">' +
-                     '<label class="page-menu-label">Background Color</label><input id="body-backgroundcolor" type="color" class="page-menu-button" value="#FFFFFF">' +
-                     '<label class="page-menu-label">Use Icons</label>' +
+                     '<label class="page-menu-label">Page Title</label><input id="page-title" type="text" class="page-menu-input" placeholder="Page Title">' +
+                     '<label class="page-menu-label">Page URL Path</label><input id="page-url" type="text" class="page-menu-input" placeholder="Page URL Path">' +
+                     '<label class="page-menu-label">Background Color</label><input id="body-backgroundcolor" type="color" class="page-menu-input" value="#FFFFFF">' +
+                     '<label class="page-menu-label">Use Popular Icons</label>' +
                      '<div>' +
                      '<i class="fa fa-bars page-menu-icons"></i>' +
                      '<i class="fa fa-comment page-menu-icons"></i>' +
-                     '<i class="fa fa-info-circle page-menu-icons"></i>' +
+                     '<i class="fa fa-chevron-left page-menu-icons"></i>' +
                      '<i class="fa fa-plus-circle page-menu-icons"></i>' +
                      '<i class="fa fa-minus-circle page-menu-icons"></i>' +
                      '<i class="fa fa-remove page-menu-icons"></i>' +
@@ -67,12 +67,12 @@ document.body.addEventListener('dblclick', function(event) {
                      '<i class="fa fa-heart page-menu-icons"></i>' +
                      '<i class="fa fa-user page-menu-icons"></i>' +
                      '</div>' +
-                     '<label class="page-menu-label">Page Options</label>' +
+                     '<label class="page-menu-label">Page Mode</label>' +
                      '<div><button class="page-menu-toggle-button selected">View</button>' +
                      '<button class="page-menu-toggle-button not-selected">Edit</button></div>' +
                      // '<label for="view" class="page-menu-toggle-label">View</label><input type="checkbox" name="view">' +
                      // '<label for="edit" class="page-menu-toggle-label">Edit</label><input type="checkbox" name="edit">' +
-                     '<button onclick="closePageMenu()">Close</button>';
+                     '<button class="close-page-menu" onclick="closePageMenu()">Close</button>';
     document.body.appendChild(menu);
     // pageMenuToggleEventCaller();
   }
