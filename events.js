@@ -31,8 +31,8 @@ function jQueryDraggableStop(event) {
   });
 }
 
-document.body.addEventListener('dblclick', function(event) {
-  if (event.path[0].nodeName === 'BODY') {
+document.body.addEventListener('keydown', function(event) {
+  if (event.ctrlKey && event.keyCode === 77) {
     Array.prototype.slice.call(document.querySelectorAll('.absolute')).forEach(function(el) {
       el.classList.add('dark-and-blurry');
     });
