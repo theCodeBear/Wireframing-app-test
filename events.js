@@ -167,11 +167,9 @@ document.body.addEventListener('click', function(event) {
       updateSavedElement(containingDiv, 'attribute', {'has-image-child': ''});
     }
   }
-  // if an element is clicked that isn't the body or the menu and menu doesn't exist, create the menu bar
-// NEED TO CHANGE THIS IF TO ONLY RUN WHEN USER CREATED ELEMENTS ARE CLICKED WHEN MENU AIN'T UP
-  if (element != document.body &&
-      !element.classList.contains('element-menu') &&
-      // !document.querySelector('#page-menu') &&
+  // Brings up element menu bar. Happens when user clicks an element and neither element or page menus are open
+  if (element.classList.contains('absolute') &&
+      !document.querySelector('#page-menu') &&
       !document.querySelector('.element-menu')) {
     element.style.zIndex = ++latestZindex;
     window.localStorage.setItem('wirezZindex', latestZindex);
