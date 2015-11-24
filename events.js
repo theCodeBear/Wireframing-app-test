@@ -100,7 +100,7 @@ document.body.addEventListener('click', function(event) {
         maxHeight: '100%',
         zIndex: containingDiv.style.zIndex - 1
       });
-      containingDiv.innerText = '';
+      updateTextNode(containingDiv, '');
       containingDiv.appendChild(img);
       containingDiv.setAttribute('has-image-child', imgUrl);
       updateSavedElement(containingDiv, 'attribute', {'has-image-child': imgUrl});
@@ -136,12 +136,18 @@ document.body.addEventListener('click', function(event) {
 function addTextareaListener() {
   document.querySelector('#temporaryInput').addEventListener('blur', function(event) {
     var textarea = event.path[0];
+    var element = textarea.parentNode;
     var input = textarea.value.trim();
-    textarea.parentNode.innerText = input;
+    updateTextNode(element, input);
     updateSavedElement(event.path[1], 'innerText', input);
-    // textarea.removeEventListener('blur', function() {
-      // textarea.parentNode.removeChild(textarea);
-    // });
+    if (element.querySelector('img') && !input)
+      element.querySelector('img').style.visibility = 'visible';
+    else if (element.querySelector('img') && input) {
+      element.removeChild(element.querySelector('img'));
+      element.removeAttribute('has-image-child');
+      updateSavedElement(element, 'attribute', {'has-image-child': ''});
+    }
+    textarea.parentNode.removeChild(textarea);
   });
 }
 
@@ -173,7 +179,7 @@ function addElementMenuBarListeners(element) {
 function editTextListener(element) {
   document.querySelector('#edit-text').addEventListener('click', function() {
     var text = element.innerText;
-    element.innerText = '';
+    updateTextNode(element, '');
     createElementTextarea(element, text);
   });
 }

@@ -46,7 +46,7 @@ function insertElementIntoBody(element) {
 
 function createElementTextarea(element, text) {
   var textarea = document.createElement('textarea');
-  textarea.innerText = text ? text : '';
+  updateTextNode(textarea, text.trim() ? text : '');
   textarea.setAttribute('placeholder', 'Type something...');
   addStyles(textarea, {
     'width': '100%',
@@ -54,9 +54,11 @@ function createElementTextarea(element, text) {
     'resize': 'none',
     'border': 'none',
     'padding': '0',
-    'fontSize': '16px'
+    'fontSize': '16px',
+    'zIndex': element.style.zIndex
   });
   textarea.setAttribute('id', 'temporaryInput');
+  if (element.querySelector('img')) element.querySelector('img').style.visibility = 'hidden';
   element.appendChild(textarea);
   textarea.focus();
   addTextareaListener();
@@ -70,7 +72,7 @@ function addStyle(element, styleName, styleValue) {
 // applies styles and innerText and HTML attributes to an element.
 function addStyles(element, styles) {
   for (var key in styles) {
-    if (key === 'innerText') element.innerText = styles[key];
+    if (key === 'innerText') updateTextNode(element, styles[key]);
     else if (key.match(/^attr:/) && styles[key]) element.setAttribute(key.split(':')[1], styles[key]);
     else element.style[key] = styles[key];
   }
@@ -85,6 +87,18 @@ function elementIsBigEnough(position) {
   var leftToRight = position.bottomRight.x > position.topLeft.x;
   var topToBottom = position.bottomRight.y > position.topLeft.y;
   return (width > 20 || height > 20) && leftToRight && topToBottom;
+}
+
+function updateTextNode(element, newText) {
+  for (var i=0; i < element.childNodes.length; i++) {
+    if (element.childNodes[i].nodeName === '#text') {
+      // if (!element.childNodes[i].nodeValue) return element.removeChild(element.childNodes[i]);
+      // else return element.childNodes[i].nodeValue = newText;
+      element.removeChild(element.childNodes[i]);
+    }
+  }
+  var textNode = document.createTextNode(newText);
+  element.appendChild(textNode);
 }
 
 // updating a saved element with new user chosen styles or text.
