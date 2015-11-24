@@ -10,6 +10,8 @@ var hadBorder = false;
 var intervalId;
 var pageTitle;
 
+createPageMenu();
+
 (function($) {
   $('.absolute').draggable({start: jQueryDraggableStart, stop: jQueryDraggableStop});
 })(jQuery);
@@ -37,57 +39,23 @@ document.body.addEventListener('keydown', function(event) {
     Array.prototype.slice.call(document.querySelectorAll('.absolute')).forEach(function(el) {
       el.classList.add('dark-and-blurry');
     });
-    var menu = document.createElement('div');
-    addStyles(menu, {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      height: '100%',
-      width: '100%',
-      textAlign: 'center',
-      fontSize: '32px',
-      fontWeight: 900,
-      color: 'white',
-      zIndex: latestZindex,
-      backgroundColor: 'rgba(0,0,0,0.8)'
-    });
-    menu.setAttribute('id', 'page-menu');
-    menu.innerHTML = '<p>PAGE MENU</p>' +
-                     '<label class="page-menu-label">Page Title</label><input id="page-title" type="text" class="page-menu-input" placeholder="Page Title">' +
-                     '<label class="page-menu-label">Page URL Path</label><input id="page-url" type="text" class="page-menu-input" placeholder="Page URL Path">' +
-                     '<label class="page-menu-label">Background Color</label><input id="body-backgroundcolor" type="color" class="page-menu-input" value="#FFFFFF">' +
-                     '<label class="page-menu-label">Use Popular Icons</label>' +
-                     '<div>' +
-                     '<i class="fa fa-bars page-menu-icons"></i>' +
-                     '<i class="fa fa-comment page-menu-icons"></i>' +
-                     '<i class="fa fa-chevron-left page-menu-icons"></i>' +
-                     '<i class="fa fa-plus-circle page-menu-icons"></i>' +
-                     '<i class="fa fa-minus-circle page-menu-icons"></i>' +
-                     '<i class="fa fa-remove page-menu-icons"></i>' +
-                     '<i class="fa fa-search page-menu-icons"></i>' +
-                     '<i class="fa fa-star page-menu-icons"></i>' +
-                     '<i class="fa fa-heart page-menu-icons"></i>' +
-                     '<i class="fa fa-user page-menu-icons"></i>' +
-                     '</div>' +
-                     '<label class="page-menu-label">Page Mode</label>' +
-                     '<div><button class="page-menu-toggle-button selected">View</button>' +
-                     '<button class="page-menu-toggle-button not-selected">Edit</button></div>' +
-                     // '<label for="view" class="page-menu-toggle-label">View</label><input type="checkbox" name="view">' +
-                     // '<label for="edit" class="page-menu-toggle-label">Edit</label><input type="checkbox" name="edit">' +
-                     '<button class="close-page-menu" onclick="closePageMenu()">Close</button>';
-    document.body.appendChild(menu);
-    menu.querySelector('#body-backgroundcolor').style.backgroundColor = document.body.style.backgroundColor;
-    pageMenuBackgroundColorEventCaller();
-    // pageMenuToggleEventCaller();
+    document.getElementById('page-menu').style.display = 'initial';
   }
 });
 
-// function pageMenuToggleEventCaller() {
-//   console.log('event made');
-//   document.querySelector('.not-selected').addEventListener(function(event) {
-//     document.querySelector('.page-menu-toggle-button').classList.toggle('not-selected selected');
-//   });
-// }
+
+function togglePageModeHandler(event) {
+  if (event.path[0].classList.contains('not-selected')) {
+    Array.prototype.slice.call(document.querySelectorAll('.page-menu-toggle-button')).forEach(
+      function(el) {
+        el.classList.toggle('not-selected');
+        el.classList.toggle('selected');
+      }
+    );
+    document.getElementById('page-menu').querySelector('.not-selected').removeEventListener('click', togglePageModeHandler);
+    document.getElementById('page-menu').querySelector('.not-selected').addEventListener('click', togglePageModeHandler);
+  }
+}
 
 function pageMenuBackgroundColorEventCaller() {
   document.body.addEventListener('change', function(event) {
@@ -458,7 +426,8 @@ function closePageMenu() {
     });
   window.history.pushState('', '', document.getElementById('page-url').value);  // just changing the url in the browser right now, not actually saving data to the new url address
   pageTitle = document.getElementById('page-title').value;
-  document.body.removeChild(document.getElementById('page-menu'));
+  // document.body.removeChild(document.getElementById('page-menu'));
+  document.getElementById('page-menu').style.display = 'none';
 }
 
 function createElMenuContainer(element) {
@@ -504,6 +473,52 @@ function createElementMenu(element) {
                      '<i id="link" style="font-size: 32px;" class="fa fa-link fa-2x menu-bar-item black-font"></i>' +
                      '<i id="delete-element" style="font-size: 32px;" class="fa fa-close fa-2x menu-bar-item black-font"></i>';
   return elMenu;
+}
+
+function createPageMenu() {
+  var menu = document.createElement('div');
+  addStyles(menu, {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    height: '100%',
+    width: '100%',
+    textAlign: 'center',
+    fontSize: '32px',
+    fontWeight: 900,
+    color: 'white',
+    zIndex: latestZindex,
+    display: 'none',
+    backgroundColor: 'rgba(0,0,0,0.8)'
+  });
+  menu.setAttribute('id', 'page-menu');
+  menu.innerHTML = '<p>PAGE MENU</p>' +
+                   '<label class="page-menu-label">Page Title</label><input id="page-title" type="text" class="page-menu-input" placeholder="Page Title">' +
+                   '<label class="page-menu-label">Page URL Path</label><input id="page-url" type="text" class="page-menu-input" placeholder="Page URL Path">' +
+                   '<label class="page-menu-label">Background Color</label><input id="body-backgroundcolor" type="color" class="page-menu-input" value="#FFFFFF">' +
+                   '<label class="page-menu-label">Use Popular Icons</label>' +
+                   '<div>' +
+                   '<i class="fa fa-bars page-menu-icons"></i>' +
+                   '<i class="fa fa-comment page-menu-icons"></i>' +
+                   '<i class="fa fa-chevron-left page-menu-icons"></i>' +
+                   '<i class="fa fa-plus-circle page-menu-icons"></i>' +
+                   '<i class="fa fa-minus-circle page-menu-icons"></i>' +
+                   '<i class="fa fa-remove page-menu-icons"></i>' +
+                   '<i class="fa fa-search page-menu-icons"></i>' +
+                   '<i class="fa fa-star page-menu-icons"></i>' +
+                   '<i class="fa fa-heart page-menu-icons"></i>' +
+                   '<i class="fa fa-user page-menu-icons"></i>' +
+                   '</div>' +
+                   '<label class="page-menu-label">Page Mode</label>' +
+                   '<div><button class="page-menu-toggle-button selected">View</button>' +
+                   '<button class="page-menu-toggle-button not-selected">Edit</button></div>' +
+                   // '<label for="view" class="page-menu-toggle-label">View</label><input type="checkbox" name="view">' +
+                   // '<label for="edit" class="page-menu-toggle-label">Edit</label><input type="checkbox" name="edit">' +
+                   '<button class="close-page-menu" onclick="closePageMenu()">Close</button>';
+  document.body.appendChild(menu);
+  menu.querySelector('#body-backgroundcolor').style.backgroundColor = document.body.style.backgroundColor;
+  pageMenuBackgroundColorEventCaller();
+  menu.querySelector('.not-selected').addEventListener('click', togglePageModeHandler);
 }
 
 // handle the various horizontal placement needs of the element menu bar when it pops up

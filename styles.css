@@ -97,6 +97,11 @@ input[type='text'].page-menu-input {
   outline: none;
 }
 
+.close-page-menu:active {
+  color: black;
+  background-color: white;
+}
+
 .selected {
   background-color: white;
 }
