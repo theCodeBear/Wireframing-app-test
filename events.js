@@ -133,7 +133,7 @@ function mouseUp(event) {
 
 
 // Handles clicking to create and destroy element menu bars
-document.body.addEventListener('click', function(event) {
+document.body.addEventListener('mousedown', function(event) {
   var element = event.path[0];
   if (element.tagName === 'IMG') element = element.parentNode;
   // console.log(element);
@@ -361,6 +361,7 @@ function resizeListener(element) {
 function makeCircleListener(element) {
   document.querySelector('#circular').addEventListener('click', function() {
     element.style.borderRadius = (!element.style.borderRadius || element.style.borderRadius === '0px') ? '50%' : '0px';
+    if (element.querySelector('img')) element.querySelector('img').style.borderRadius = element.style.borderRadius;
     updateSavedElement(element, 'style', {borderRadius: element.style.borderRadius});
   });
 }

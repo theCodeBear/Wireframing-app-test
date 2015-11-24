@@ -160,6 +160,7 @@ function createImgInDivFromLS(element) {
     left: 0,
     maxWidth: '100%',
     maxHeight: '100%',
+    borderRadius: element.style.borderRadius,
     zIndex: element.style.zIndex - 1
   });
   element.appendChild(img);
