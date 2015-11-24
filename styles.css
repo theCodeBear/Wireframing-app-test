@@ -94,6 +94,7 @@ input[type='text'].page-menu-input {
   background-color: transparent;
   color: white;
   border-radius: 15px;
+  outline: none;
 }
 
 .selected {

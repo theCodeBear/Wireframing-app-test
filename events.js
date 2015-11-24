@@ -8,6 +8,7 @@ var menuTop = -260;
 var resizing = false;
 var hadBorder = false;
 var intervalId;
+var pageTitle;
 
 (function($) {
   $('.absolute').draggable({start: jQueryDraggableStart, stop: jQueryDraggableStop});
@@ -75,6 +76,8 @@ document.body.addEventListener('keydown', function(event) {
                      // '<label for="edit" class="page-menu-toggle-label">Edit</label><input type="checkbox" name="edit">' +
                      '<button class="close-page-menu" onclick="closePageMenu()">Close</button>';
     document.body.appendChild(menu);
+    menu.querySelector('#body-backgroundcolor').style.backgroundColor = document.body.style.backgroundColor;
+    pageMenuBackgroundColorEventCaller();
     // pageMenuToggleEventCaller();
   }
 });
@@ -85,6 +88,12 @@ document.body.addEventListener('keydown', function(event) {
 //     document.querySelector('.page-menu-toggle-button').classList.toggle('not-selected selected');
 //   });
 // }
+
+function pageMenuBackgroundColorEventCaller() {
+  document.body.addEventListener('change', function(event) {
+    document.body.style.backgroundColor = event.path[0].value;
+  });
+}
 
 
 document.body.addEventListener('mousedown', function(event) {
@@ -444,10 +453,12 @@ function closeElementMenuBar() {
 }
 
 function closePageMenu() {
-  document.body.removeChild(document.getElementById('page-menu'));
   Array.prototype.slice.call(document.querySelectorAll('.absolute')).forEach(function(el) {
       el.classList.remove('dark-and-blurry');
     });
+  window.history.pushState('', '', document.getElementById('page-url').value);  // just changing the url in the browser right now, not actually saving data to the new url address
+  pageTitle = document.getElementById('page-title').value;
+  document.body.removeChild(document.getElementById('page-menu'));
 }
 
 function createElMenuContainer(element) {
