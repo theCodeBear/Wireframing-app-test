@@ -73,7 +73,11 @@ function addStyle(element, styleName, styleValue) {
 function addStyles(element, styles) {
   for (var key in styles) {
     if (key === 'innerText') updateTextNode(element, styles[key]);
-    else if (key.match(/^attr:/) && styles[key]) element.setAttribute(key.split(':')[1], styles[key]);
+    else if (key.match(/^attr:/) && styles[key]) {
+      var attrKey = key.split(':')[1];
+      if (attrKey === 'data-icon') element.classList.add('fa', styles[key]);
+      else element.setAttribute(key.split(':')[1], styles[key]);
+    }
     else element.style[key] = styles[key];
   }
 }

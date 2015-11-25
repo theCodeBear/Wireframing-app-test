@@ -58,6 +58,10 @@ function togglePageModeHandler(event) {
   }
 }
 
+function pageMenuIconsHandler(event) {
+  copyIcon(event.path[0]);
+}
+
 function pageMenuBackgroundColorEventCaller() {
   document.getElementById('body-backgroundcolor').addEventListener('change', function(event) {
     document.body.style.backgroundColor = event.path[0].value;
@@ -84,7 +88,6 @@ document.body.addEventListener('mousedown', function(event) {
       document.body.addEventListener('mousemove', mousemoveHandler);
     });
   }
-  clicky(event);
 });
 
 function mousemoveHandler(event, outlineElement) {
@@ -97,6 +100,7 @@ function mousemoveHandler(event, outlineElement) {
 document.body.addEventListener('mouseup', mouseUp);
 
 function mouseUp(event) {
+  var element = event.path[0];
   document.body.removeEventListener('mousemove', mousemoveHandler);
   if (document.getElementById('outline-element')) {
     document.body.removeChild(document.querySelector('#outline-element'));
@@ -108,13 +112,16 @@ function mouseUp(event) {
     if (elementIsBigEnough({topLeft, bottomRight}))
       createNewElement({topLeft, bottomRight});
   }
+  // if a menu bar exists and a click is made not on it or its options, close menu bar
+  if (document.querySelector('.element-menu') && !element.classList.contains('element-menu') && !element.classList.contains('menu-bar-item')) {
+    closeElementMenuBar();
+  }
 }
 
 
 
 // Handles clicking to create and destroy element menu bars
-// document.body.addEventListener('click', function(event) {
-function clicky(event) {
+document.body.addEventListener('click', function(event) {
   var element = event.path[0];
   if (element.tagName === 'IMG') element = element.parentNode;
   // console.log(element);
@@ -188,11 +195,8 @@ function clicky(event) {
     var elMenu = createElementMenu(element);
     menuContainer.appendChild(elMenu);
     addElementMenuBarListeners(element);
-  // if a menu bar exists and a click is made not on it or its options, close menu bar
-  } else if (document.querySelector('.element-menu') && !element.classList.contains('element-menu') && !element.classList.contains('menu-bar-item')) {
-    closeElementMenuBar();
   }
-}//);
+});
 
 function addTextareaListener() {
   document.querySelector('#temporaryInput').addEventListener('blur', function(event) {
@@ -266,13 +270,25 @@ function borderListener(element) {
 function smallerFontListener(element) {
   document.querySelector('#smaller-font').addEventListener('click', function() {
     element.style.fontSize = + element.style.fontSize.slice(0,-2) - 4 + 'px';
-    updateSavedElement(element, 'style', {fontSize: element.style.fontSize});
+    if (element.classList.contains('fa'))
+      addStyles(element, {'width': element.style.fontSize, 'height': element.style.fontSize});
+    updateSavedElement(element, 'style', {
+      fontSize: element.style.fontSize,
+      height: element.style.height,
+      width: element.style.width
+    });
   });
 }
 function largerFontListener(element) {
   document.querySelector('#larger-font').addEventListener('click', function() {
     element.style.fontSize = + element.style.fontSize.slice(0,-2) + 4 + 'px';
-    updateSavedElement(element, 'style', {fontSize: element.style.fontSize});
+    if (element.classList.contains('fa'))
+      addStyles(element, {'width': element.style.fontSize, 'height': element.style.fontSize});
+    updateSavedElement(element, 'style', {
+      fontSize: element.style.fontSize,
+      height: element.style.height,
+      width: element.style.width
+    });
   });
 }
 function fontWeightListener(element) {
@@ -361,6 +377,38 @@ function deleteElementListener(element) {
 
 
 // RELATED FUNCTIONS
+
+function copyIcon(element) {
+  var newIcon = element.cloneNode();
+  newIcon.setAttribute('id', elements.length);
+  newIcon.classList.remove('page-menu-icons');
+  newIcon.classList.add('absolute');
+  addStyles(newIcon, {
+    zIndex: latestZindex,
+    top: 0,
+    left: 0,
+    height: '32px',
+    width: '32px',
+    fontSize: '32px',
+    cursor: 'move'
+  });
+  insertElementIntoBody(newIcon);
+  elements.push(newIcon);
+  updateSavedElement(newIcon, 'style', {
+    zIndex: newIcon.style.zIndex,
+    top: newIcon.style.top,
+    left: newIcon.style.left,
+    height: newIcon.style.height,
+    width: newIcon.style.width,
+    fontSize: newIcon.style.fontSize,
+    cursor: newIcon.style.cursor
+  });
+  updateSavedElement(newIcon, 'attribute', {
+    'data-icon': newIcon.classList.toString().match(/fa-\w+/)
+  });
+  // window.localStorage.setItem('wirez', JSON.stringify(elements));
+  $('.absolute').draggable({start: jQueryDraggableStart, stop: jQueryDraggableStop});
+}
 
 function createLink(link) {
   return window.location = link;
@@ -522,6 +570,9 @@ function createPageMenu() {
   menu.querySelector('#body-backgroundcolor').value = rgbToHex(document.body.style.backgroundColor);
   pageMenuBackgroundColorEventCaller();
   menu.querySelector('.not-selected').addEventListener('click', togglePageModeHandler);
+  Array.prototype.slice.call(menu.querySelectorAll('.page-menu-icons')).forEach(function(el) {
+    el.addEventListener('click', pageMenuIconsHandler);
+  });
 }
 
 function rgbToHex(rgb) {
