@@ -39,6 +39,7 @@ document.body.addEventListener('keydown', function(event) {
     Array.prototype.slice.call(document.querySelectorAll('.absolute')).forEach(function(el) {
       el.classList.add('dark-and-blurry');
     });
+    document.getElementById('page-menu').style.zIndex = latestZindex;
     document.getElementById('page-menu').style.display = 'initial';
   }
 });
@@ -58,8 +59,9 @@ function togglePageModeHandler(event) {
 }
 
 function pageMenuBackgroundColorEventCaller() {
-  document.body.addEventListener('change', function(event) {
+  document.getElementById('body-backgroundcolor').addEventListener('change', function(event) {
     document.body.style.backgroundColor = event.path[0].value;
+    window.localStorage.setItem('wirezBody', document.body.style.backgroundColor);
   });
 }
 
@@ -82,6 +84,7 @@ document.body.addEventListener('mousedown', function(event) {
       document.body.addEventListener('mousemove', mousemoveHandler);
     });
   }
+  clicky(event);
 });
 
 function mousemoveHandler(event, outlineElement) {
@@ -110,7 +113,8 @@ function mouseUp(event) {
 
 
 // Handles clicking to create and destroy element menu bars
-document.body.addEventListener('mousedown', function(event) {
+// document.body.addEventListener('click', function(event) {
+function clicky(event) {
   var element = event.path[0];
   if (element.tagName === 'IMG') element = element.parentNode;
   // console.log(element);
@@ -175,7 +179,7 @@ document.body.addEventListener('mousedown', function(event) {
   }
   // Brings up element menu bar. Happens when user clicks an element and neither element or page menus are open
   if (element.classList.contains('absolute') &&
-      !document.querySelector('#page-menu') &&
+      document.querySelector('#page-menu').style.display==='none' &&
       !document.querySelector('.element-menu')) {
     element.style.zIndex = ++latestZindex;
     window.localStorage.setItem('wirezZindex', latestZindex);
@@ -188,7 +192,7 @@ document.body.addEventListener('mousedown', function(event) {
   } else if (document.querySelector('.element-menu') && !element.classList.contains('element-menu') && !element.classList.contains('menu-bar-item')) {
     closeElementMenuBar();
   }
-});
+}//);
 
 function addTextareaListener() {
   document.querySelector('#temporaryInput').addEventListener('blur', function(event) {
@@ -331,7 +335,7 @@ function resizeListener(element) {
     hadBorder = (element.style.border === 'none') ? false : true;
     if (!hadBorder) element.style.border = '1px dashed black';
     resizing = true;
-    // fix a bug that sometimes a piece of the menu bar still shows after resizing
+    // fixes a bug that sometimes a piece of the menu bar still shows after resizing
     document.querySelector('.element-menu').style.visibility = 'hidden';
   });
 }
@@ -426,7 +430,6 @@ function closePageMenu() {
     });
   window.history.pushState('', '', document.getElementById('page-url').value);  // just changing the url in the browser right now, not actually saving data to the new url address
   pageTitle = document.getElementById('page-title').value;
-  // document.body.removeChild(document.getElementById('page-menu'));
   document.getElementById('page-menu').style.display = 'none';
 }
 
@@ -516,9 +519,18 @@ function createPageMenu() {
                    // '<label for="edit" class="page-menu-toggle-label">Edit</label><input type="checkbox" name="edit">' +
                    '<button class="close-page-menu" onclick="closePageMenu()">Close</button>';
   document.body.appendChild(menu);
-  menu.querySelector('#body-backgroundcolor').style.backgroundColor = document.body.style.backgroundColor;
+  menu.querySelector('#body-backgroundcolor').value = rgbToHex(document.body.style.backgroundColor);
   pageMenuBackgroundColorEventCaller();
   menu.querySelector('.not-selected').addEventListener('click', togglePageModeHandler);
+}
+
+function rgbToHex(rgb) {
+  var rgbArray = rgb.split(/[()]/)[1].split(/,\s*/);
+  rgbArray = rgbArray.map(function(el) {
+    el = parseInt(el).toString(16);
+    return (el==='0') ? '00' : el;
+  });
+  return '#'+rgbArray[0]+rgbArray[1]+rgbArray[2];
 }
 
 // handle the various horizontal placement needs of the element menu bar when it pops up

@@ -137,6 +137,7 @@ function deleteElement(elementId) {
 
 function getElementsFromLocalStorage() {
   latestZindex = JSON.parse(window.localStorage.getItem('wirezZindex')) || 1;
+  document.body.style.backgroundColor = window.localStorage.getItem('wirezBody') || 'white';
   elements = JSON.parse(window.localStorage.getItem('wirez')) || [];
   if (elements.length) {
     var rebornElements = [];
