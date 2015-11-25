@@ -113,7 +113,9 @@ function mouseUp(event) {
       createNewElement({topLeft, bottomRight});
   }
   // if a menu bar exists and a click is made not on it or its options, close menu bar
-  if (document.querySelector('.element-menu') && !element.classList.contains('element-menu') && !element.classList.contains('menu-bar-item')) {
+  if ((document.querySelector('.element-menu') && !element.classList.contains('element-menu')) ||
+      (document.querySelector('.icon-menu') && !element.classList.contains('icon-menu')) &&
+      !element.classList.contains('menu-bar-item')) {
     closeElementMenuBar();
   }
 }
@@ -188,11 +190,14 @@ document.body.addEventListener('click', function(event) {
   if (element.classList.contains('absolute') &&
       document.querySelector('#page-menu').style.display==='none' &&
       !document.querySelector('.element-menu')) {
+    var elMenu;
     element.style.zIndex = ++latestZindex;
     window.localStorage.setItem('wirezZindex', latestZindex);
     updateSavedElement(element, 'style', {zIndex: element.style.zIndex});
     var menuContainer = createElMenuContainer(element);
-    var elMenu = createElementMenu(element);
+    // if element is not an icon, else element is an icon
+    if (!element.classList.contains('fa')) elMenu = createElementMenu();
+    else elMenu = createIconMenu();
     menuContainer.appendChild(elMenu);
     addElementMenuBarListeners(element);
   }
@@ -498,7 +503,7 @@ function createElMenuContainer(element) {
   return container;
 }
 
-function createElementMenu(element) {
+function createElementMenu() {
   var elMenu = document.createElement('div');
   elMenu.style.cursor = 'initial';
   elMenu.classList.add('element-menu');
@@ -521,6 +526,19 @@ function createElementMenu(element) {
                      '<i id="resize" style="font-size: 32px;" class="fa fa-arrows fa-2x menu-bar-item black-font"></i>' +
                      '<i id="circular" style="font-size: 32px;" class="fa fa-genderless fa-2x menu-bar-item black-font"></i>' +
                      '<i id="add-image" style="font-size: 32px;" class="fa fa-image fa-2x menu-bar-item black-font"></i>' +
+                     '<i id="link" style="font-size: 32px;" class="fa fa-link fa-2x menu-bar-item black-font"></i>' +
+                     '<i id="delete-element" style="font-size: 32px;" class="fa fa-close fa-2x menu-bar-item black-font"></i>';
+  return elMenu;
+}
+
+function createIconMenu() {
+  var elMenu = document.createElement('div');
+  elMenu.style.cursor = 'initial';
+  elMenu.classList.add('icon-menu');
+  elMenu.innerHTML = '<i id="font-weight" style="font-size: 32px;" class="fa fa-text-width fa-2x menu-bar-item black-font"></i>' +
+                     '<i style="font-size: 32px;" class="fa fa-font fa-2x menu-bar-item"><input id="font-color" type="color" class="menu-bar-item text-color-input menu-color-pickers"></i>' +
+                     '<i id="smaller-font" style="font-size: 21.3333px;" class="fa fa-font fa-lg menu-bar-item black-font"></i>' +
+                     '<i id="larger-font" style="font-size: 48px;" class="fa fa-font fa-3x menu-bar-item black-font"></i>' +
                      '<i id="link" style="font-size: 32px;" class="fa fa-link fa-2x menu-bar-item black-font"></i>' +
                      '<i id="delete-element" style="font-size: 32px;" class="fa fa-close fa-2x menu-bar-item black-font"></i>';
   return elMenu;
